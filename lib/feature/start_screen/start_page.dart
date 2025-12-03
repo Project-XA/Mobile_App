@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mobile_app/core/routing/routes.dart';
+import 'package:mobile_app/core/services/extensions.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/font_weight_helper.dart';
@@ -54,7 +56,6 @@ class StartPage extends StatelessWidget {
 
                   verticalSpace(8),
 
-                  /// SUBTITLE
                   Text(
                     "Follow the steps below to continue",
                     textAlign: TextAlign.center,
@@ -101,7 +102,9 @@ class StartPage extends StatelessWidget {
                         fontSize: 15.sp,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      context.pushNamed(Routes.scanIdScreen);
+                    },
                   ),
                 ],
               ),

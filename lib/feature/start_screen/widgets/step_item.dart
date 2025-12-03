@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
+import 'package:mobile_app/core/themes/app_text_style.dart';
 
 class StepItem extends StatelessWidget {
   final IconData icon;
@@ -28,14 +29,7 @@ class StepItem extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.mainTextColorBlack,
-                ),
-              ),
+              Text(title, style: AppTextStyle.font18BoldBlack),
 
               verticalSpace(4),
 
