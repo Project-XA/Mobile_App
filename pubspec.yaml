@@ -30,11 +30,13 @@ environment:
 dependencies:
   adaptive_screen_utils: ^2.4.0
   cupertino_icons: ^1.0.8
+  dio: ^5.9.0
   flutter:
     sdk: flutter
   fluttertoast: ^9.0.0
   local_auth: ^3.0.0
   lottie: ^3.3.2
+  pretty_dio_logger: ^1.4.0
   shared_preferences: ^2.5.3
 
 dev_dependencies:
