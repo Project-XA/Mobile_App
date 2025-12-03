@@ -33,6 +33,7 @@ dependencies:
   dio: ^5.9.0
   flutter:
     sdk: flutter
+  flutter_screenutil: ^5.9.3
   fluttertoast: ^9.0.0
   local_auth: ^3.0.0
   lottie: ^3.3.2
@@ -40,6 +41,7 @@ dependencies:
   shared_preferences: ^2.5.3
 
 dev_dependencies:
+  build_runner: ^2.10.4
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
@@ -58,6 +60,16 @@ flutter:
   assets:
     - assets/images/
   #   - images/a_dot_ham.jpeg
+flutter_gen:
+  output: lib/core/utils/
+  line_length: 80
+  integrations:
+    flutter_svg: true
+
+flutter_assets:
+  assets_path: assets/images/
+  output_path: lib/core/utils/
+  filename: app_assets.dart
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
   # For details regarding adding assets from package dependencies, see
