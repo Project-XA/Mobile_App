@@ -82,7 +82,9 @@ class OcrService {
         },
       );
 
-      print("📝 [OCR] Extracted text: ${text.substring(0, text.length > 50 ? 50 : text.length)}...");
+      print(
+        "📝 [OCR] Extracted text: ${text.substring(0, text.length > 50 ? 50 : text.length)}...",
+      );
 
       if (text.trim().isEmpty) {
         throw Exception('No text found in image');
@@ -127,7 +129,8 @@ class OcrService {
 
       // Save processed image
       final dir = await getTemporaryDirectory();
-      final processedPath = '${dir.path}/ocr_processed_${DateTime.now().millisecondsSinceEpoch}.png';
+      final processedPath =
+          '${dir.path}/ocr_processed_${DateTime.now().millisecondsSinceEpoch}.png';
       final processedFile = File(processedPath);
       await processedFile.writeAsBytes(img.encodePng(processed));
 

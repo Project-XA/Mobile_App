@@ -7,7 +7,6 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class CropService {
-  /// Crop fields from original image based on detections
   static Future<List<CroppedField>> cropFields({
     required String originalImagePath,
     required List<DetectionModel> detections,
