@@ -16,5 +16,5 @@ Future<void> main() async {
   }
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(AttendencyApp(appRouter: AppRoute(), initialRoute: Routes.startPage));
+  runApp(AttendencyApp(appRouter: AppRoute(), initialRoute: Routes.homePage));
 }
