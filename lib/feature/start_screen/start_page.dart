@@ -69,7 +69,7 @@ class StartPage extends StatelessWidget {
                   verticalSpace(30),
 
                   /// STEPS
-                  Column(
+                const  Column(
                     children: const [
                       StepItem(
                         icon: Icons.phone_android,

@@ -73,7 +73,7 @@ class ScanIdScreen extends StatelessWidget {
     return AppBar(
       leading: IconButton(
         onPressed: () => context.pop(),
-        icon: Icon(
+        icon:const Icon(
           Icons.arrow_back_ios_new,
           color: AppColors.mainTextColorBlack,
         ),

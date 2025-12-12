@@ -4,22 +4,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AppTextFormField extends StatelessWidget {
   final String? hintText;
   final Widget? suffixIcon;
-
   final double borderRadius;
   final Color focusedBorderColor;
   final Color enabledBorderColor;
-
   final bool obscureText;
   final Color? backgroundColor;
   final TextStyle? textStyle;
-
   final EdgeInsetsGeometry? contentPadding;
-
   final TextEditingController? controller;
   final String? Function(String?)? validator;
-
   final Widget? label;
   final TextStyle? labelStyle;
+  final TextInputType? keyboardType;
 
   const AppTextFormField({
     super.key,
@@ -36,6 +32,7 @@ class AppTextFormField extends StatelessWidget {
     this.validator,
     this.label,
     this.labelStyle,
+    this.keyboardType, // ✅ هنا
   });
 
   @override
@@ -46,24 +43,23 @@ class AppTextFormField extends StatelessWidget {
       obscureText: obscureText,
       style: textStyle,
       cursorColor: Colors.black,
+      keyboardType: keyboardType ?? TextInputType.text,
       decoration: InputDecoration(
         filled: true,
         fillColor: backgroundColor ?? Colors.white,
         isDense: true,
-        contentPadding: contentPadding ??
+        contentPadding:
+            contentPadding ??
             EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
-
         // Borders
         enabledBorder: textFieldBorder(borderRadius, enabledBorderColor),
         focusedBorder: textFieldBorder(borderRadius, focusedBorderColor),
         errorBorder: textFieldBorder(borderRadius, Colors.red),
         focusedErrorBorder: textFieldBorder(borderRadius, Colors.red),
         border: textFieldBorder(borderRadius, enabledBorderColor),
-
         // Text / Icons
         hintText: hintText,
         suffixIcon: suffixIcon,
-
         // Label
         label: label,
         labelStyle: labelStyle,

@@ -9,5 +9,9 @@ class Assets {
   /// Assets for assetsImagesLogo
   /// assets/images/logo.png
   static const String assetsImagesLogo = "assets/images/logo.png";
+
+  /// Assets for assetsImagesUser
+  /// assets/images/user.png
+  static const String assetsImagesUser = "assets/images/user.png";
 }
 
