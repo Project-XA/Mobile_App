@@ -45,7 +45,6 @@ class _RegistrationToOrganizationState
       child: BlocListener<UserRoleCubit, UserRoleState>(
         listener: (context, state) {
           if (state is UserRoleSuccess) {
-            // Navigate to home page with the user role
             context.pushReplacmentNamed(
               Routes.homePage,
               arguments: state.role,

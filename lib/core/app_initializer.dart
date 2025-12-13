@@ -20,7 +20,7 @@ Future<void> initializeApp() async {
   Hive.registerAdapter(OrganizationModelAdapter());
 
   // Setup Dependency Injection
-  setup();
+  await setup();
 
   // Initialize cameras
   try {

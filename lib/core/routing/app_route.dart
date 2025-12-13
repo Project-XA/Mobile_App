@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/routing/routes.dart';
 import 'package:mobile_app/feature/home/presentation/admin/home/presentation/admin_home.dart';
+import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/profile_screen.dart';
+import 'package:mobile_app/feature/register/presentation/register_screen.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/scan_id_screen.dart';
 import 'package:mobile_app/feature/start_screen/start_page.dart';
 import 'package:mobile_app/feature/registration_to_organization/presentation/registration_to_organization.dart';
@@ -34,6 +36,12 @@ class AppRoute {
         break;
       case Routes.adminHome:
         page = const AdminHome();
+        break;
+      case Routes.profileScreen:
+        page = const ProfileScreen();
+        break;
+      case Routes.registeScreen:
+        page = const RegisterScreen();
         break;
       default:
         page = const Scaffold();

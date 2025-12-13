@@ -1,28 +1,20 @@
 import 'package:camera/camera.dart';
 import 'package:mobile_app/feature/scan_OCR/data/model/cropped_field.dart';
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/captured_photo.dart';
+import 'package:mobile_app/feature/scan_OCR/presentation/logic/processing_status.dart';
+import 'camera_status.dart';
 
 class CameraState {
   final CameraController? controller;
-
   final bool isOpened;
-
   final bool isInitializing;
-
   final bool hasCaptured;
-
   final CapturedPhoto? photo;
-
   final bool isProcessing;
-
   final bool showResult;
-
   final List<CroppedField>? croppedFields;
-
   final Map<String, String>? extractedText;
-
   final Map<String, String>? finalData;
-
   final bool hasError;
 
   const CameraState({
@@ -39,17 +31,12 @@ class CameraState {
     this.hasError = false,
   });
 
+  
   bool get isBusy => isInitializing || isProcessing;
-
   bool get canCapture => isOpened && !isBusy && !hasCaptured;
-
   bool get canRetake => hasCaptured && !isBusy;
-
-  bool get hasResults =>
-      showResult && finalData != null && finalData!.isNotEmpty;
-
+  bool get hasResults => showResult && finalData != null && finalData!.isNotEmpty;
   bool get isValidCard => hasCaptured && (showResult || isProcessing);
-
   bool get isInvalidCard => hasCaptured && !showResult && !isProcessing;
 
   CameraStatus get cameraStatus {
@@ -67,6 +54,7 @@ class CameraState {
     return ProcessingStatus.idle;
   }
 
+  
   String getFieldValue(String fieldName, {String defaultValue = 'N/A'}) {
     return finalData?[fieldName] ?? defaultValue;
   }
@@ -85,6 +73,7 @@ class CameraState {
 
   int get extractedFieldsCount => validFields.length;
 
+  
   CameraState copyWith({
     CameraController? controller,
     bool? isOpened,
@@ -113,7 +102,6 @@ class CameraState {
     );
   }
 
-  // ========== Equality & HashCode ==========
 
   @override
   bool operator ==(Object other) {
@@ -154,47 +142,4 @@ class CameraState {
         'extractedFields: $extractedFieldsCount'
         ')';
   }
-}
-
-enum CameraStatus { closed, initializing, ready, error }
-
-enum ProcessingStatus { idle, processing, completed, invalidCard, error }
-
-extension CameraStatusExtension on CameraStatus {
-  String get displayText {
-    switch (this) {
-      case CameraStatus.closed:
-        return 'Camera Closed';
-      case CameraStatus.initializing:
-        return 'Initializing Camera...';
-      case CameraStatus.ready:
-        return 'Ready to Capture';
-      case CameraStatus.error:
-        return 'Camera Error';
-    }
-  }
-
-  bool get isReady => this == CameraStatus.ready;
-  bool get hasError => this == CameraStatus.error;
-}
-
-extension ProcessingStatusExtension on ProcessingStatus {
-  String get displayText {
-    switch (this) {
-      case ProcessingStatus.idle:
-        return 'Ready';
-      case ProcessingStatus.processing:
-        return 'Processing...';
-      case ProcessingStatus.completed:
-        return 'Completed';
-      case ProcessingStatus.invalidCard:
-        return 'Invalid Card';
-      case ProcessingStatus.error:
-        return 'Processing Error';
-    }
-  }
-
-  bool get isProcessing => this == ProcessingStatus.processing;
-  bool get isCompleted => this == ProcessingStatus.completed;
-  bool get hasError => this == ProcessingStatus.error;
 }

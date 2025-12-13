@@ -8,9 +8,6 @@ Future<void> main() async {
   await initializeApp();
 
   runApp(
-    AttendencyApp(
-      appRouter: AppRoute(),
-      initialRoute: Routes.registrationToOrganization,
-    ),
+    AttendencyApp(appRouter: AppRoute(), initialRoute: Routes.registeScreen),
   );
 }

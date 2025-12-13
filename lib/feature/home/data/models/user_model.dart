@@ -1,3 +1,4 @@
+// data/models/user_model.dart
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mobile_app/feature/home/data/models/user_org_model.dart';
@@ -5,56 +6,93 @@ import 'package:mobile_app/feature/home/domain/entities/user.dart';
 import 'package:mobile_app/feature/home/domain/entities/user_org.dart';
 
 part 'user_model.g.dart';
+
 @JsonSerializable()
 @HiveType(typeId: 0)
 class UserModel extends HiveObject {
   @HiveField(0)
   String nationalId;
+  
   @HiveField(1)
-  String fullName;
+  String firstNameAr;
+  
   @HiveField(2)
-  String? birthDate;
+  String lastNameAr;
+  
   @HiveField(3)
-  String email;
+  String? address;
+  
   @HiveField(4)
-  List<UserOrgModel> organizations;
+  String? birthDate;
+  
+  // ========== Remote Data ==========
+  @HiveField(5)
+  String? email;
+  
+  @HiveField(6)
+  String? firstNameEn;
+  
+  @HiveField(7)
+  String? lastNameEn;
+  
+  @HiveField(8)
+  List<UserOrgModel>? organizations;
+  
+  @HiveField(9)
+  String? profileImage;
+  
   UserModel({
     required this.nationalId,
-    required this.fullName,
+    required this.firstNameAr,
+    required this.lastNameAr,
+    this.address,
     this.birthDate,
-    required this.email,
-    required this.organizations,
+    this.email,
+    this.firstNameEn,
+    this.lastNameEn,
+    this.organizations,
+    this.profileImage,
   });
-
+  
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
+  
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
-
-  // fromEntity / toEntity for Domain
- factory UserModel.fromEntity(User user) {
-  return UserModel(
-    nationalId: user.nationalId,
-    fullName: user.fullName,
-    birthDate: user.birthDate,
-    email: user.email,
-    organizations: user.organizations
-        .map((org) => UserOrgModel.fromEntity(org))
-        .toList(),
-  );
-}
-
+  
+  factory UserModel.fromEntity(User user) {
+    return UserModel(
+      nationalId: user.nationalId,
+      firstNameAr: user.firstNameAr,
+      lastNameAr: user.lastNameAr,
+      address: user.address,
+      birthDate: user.birthDate,
+      email: user.email,
+      firstNameEn: user.firstNameEn,
+      lastNameEn: user.lastNameEn,
+      organizations: user.organizations
+          ?.map((org) => UserOrgModel.fromEntity(org))
+          .toList(),
+      profileImage: user.profileImage,
+    );
+  }
+  
   User toEntity() {
     return User(
-      fullName.split(' ').first,
-      fullName.split(' ').last,
       nationalId: nationalId,
+      firstNameAr: firstNameAr,
+      lastNameAr: lastNameAr,
+      address: address,
       birthDate: birthDate,
       email: email,
+      firstNameEn: firstNameEn,
+      lastNameEn: lastNameEn,
       organizations: organizations
-          .map(
-            (orgModel) => UserOrg(orgId: orgModel.orgId, role: orgModel.role),
-          )
+          ?.map((orgModel) => UserOrg(
+                orgId: orgModel.orgId,
+                role: orgModel.role,
+              ))
           .toList(),
+      profileImage: profileImage,
     );
   }
 }

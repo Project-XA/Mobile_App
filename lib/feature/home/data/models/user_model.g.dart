@@ -18,27 +18,42 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
     };
     return UserModel(
       nationalId: fields[0] as String,
-      fullName: fields[1] as String,
-      birthDate: fields[2] as String?,
-      email: fields[3] as String,
-      organizations: (fields[4] as List).cast<UserOrgModel>(),
+      firstNameAr: fields[1] as String,
+      lastNameAr: fields[2] as String,
+      address: fields[3] as String?,
+      birthDate: fields[4] as String?,
+      email: fields[5] as String?,
+      firstNameEn: fields[6] as String?,
+      lastNameEn: fields[7] as String?,
+      organizations: (fields[8] as List?)?.cast<UserOrgModel>(),
+      profileImage: fields[9] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.nationalId)
       ..writeByte(1)
-      ..write(obj.fullName)
+      ..write(obj.firstNameAr)
       ..writeByte(2)
-      ..write(obj.birthDate)
+      ..write(obj.lastNameAr)
       ..writeByte(3)
-      ..write(obj.email)
+      ..write(obj.address)
       ..writeByte(4)
-      ..write(obj.organizations);
+      ..write(obj.birthDate)
+      ..writeByte(5)
+      ..write(obj.email)
+      ..writeByte(6)
+      ..write(obj.firstNameEn)
+      ..writeByte(7)
+      ..write(obj.lastNameEn)
+      ..writeByte(8)
+      ..write(obj.organizations)
+      ..writeByte(9)
+      ..write(obj.profileImage);
   }
 
   @override
@@ -58,18 +73,28 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
 
 UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       nationalId: json['nationalId'] as String,
-      fullName: json['fullName'] as String,
+      firstNameAr: json['firstNameAr'] as String,
+      lastNameAr: json['lastNameAr'] as String,
+      address: json['address'] as String?,
       birthDate: json['birthDate'] as String?,
-      email: json['email'] as String,
-      organizations: (json['organizations'] as List<dynamic>)
-          .map((e) => UserOrgModel.fromJson(e as Map<String, dynamic>))
+      email: json['email'] as String?,
+      firstNameEn: json['firstNameEn'] as String?,
+      lastNameEn: json['lastNameEn'] as String?,
+      organizations: (json['organizations'] as List<dynamic>?)
+          ?.map((e) => UserOrgModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      profileImage: json['profileImage'] as String?,
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'nationalId': instance.nationalId,
-      'fullName': instance.fullName,
+      'firstNameAr': instance.firstNameAr,
+      'lastNameAr': instance.lastNameAr,
+      'address': instance.address,
       'birthDate': instance.birthDate,
       'email': instance.email,
+      'firstNameEn': instance.firstNameEn,
+      'lastNameEn': instance.lastNameEn,
       'organizations': instance.organizations,
+      'profileImage': instance.profileImage,
     };

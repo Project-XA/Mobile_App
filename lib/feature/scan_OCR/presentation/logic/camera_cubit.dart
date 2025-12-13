@@ -1,6 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/feature/scan_OCR/domain/repo/camera_repo.dart';
+import 'package:mobile_app/feature/scan_OCR/domain/usecases/process_card_use_case.dart';
+import 'package:mobile_app/feature/scan_OCR/domain/usecases/save_scanned_card_use_case.dart';
+import 'package:mobile_app/feature/scan_OCR/domain/usecases/validate_card_use_case.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/logic/camera_state.dart';
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/captured_photo.dart';
 
@@ -9,12 +12,14 @@ class CameraCubit extends Cubit<CameraState> {
   final CapturePhotoUseCase _captureUseCase;
   final ValidateCardUseCase _validateUseCase;
   final ProcessCardUseCase _processUseCase;
+  final SaveScannedCardUseCase _saveCardUseCase;
 
   CameraCubit(
     this._repository,
     this._captureUseCase,
     this._validateUseCase,
     this._processUseCase,
+    this._saveCardUseCase,
   ) : super(const CameraState());
 
   CameraController? get controller => state.controller;
@@ -23,12 +28,10 @@ class CameraCubit extends Cubit<CameraState> {
 
   Future<void> openCamera() async {
     if (state.isOpened) return;
-
     emit(state.copyWith(isInitializing: true, hasError: false));
 
     try {
       await _repository.openCamera();
-
       emit(
         state.copyWith(
           isOpened: true,
@@ -53,21 +56,29 @@ class CameraCubit extends Cubit<CameraState> {
 
   Future<void> capturePhoto() async {
     if (!state.canCapture) return;
-
     emit(state.copyWith(isProcessing: true, hasError: false));
 
     try {
       final photo = await _captureUseCase.execute();
-
+      
+      await _repository.closeCamera();
+            emit(
+        state.copyWith(
+          isOpened: false,
+          controller: null,
+          hasCaptured: true,
+          photo: photo,
+          isProcessing: true, 
+        ),
+      );
+      
       final isValid = await _validateUseCase.execute(photo);
-
+      
       if (!isValid) {
         emit(
           state.copyWith(
             isProcessing: false,
             showResult: false,
-            hasCaptured: true,
-            photo: photo,
             hasError: false,
           ),
         );
@@ -75,22 +86,20 @@ class CameraCubit extends Cubit<CameraState> {
       }
 
       final result = await _processUseCase.execute(photo);
-
-      await _repository.closeCamera();
-
+      
+     // print('📋 OCR Result: ${result.finalData}');
+      
       emit(
         state.copyWith(
-          photo: photo,
-          hasCaptured: true,
           isProcessing: false,
           showResult: true,
-          isOpened: false,
           croppedFields: result.croppedFields,
           finalData: result.finalData,
           hasError: false,
         ),
       );
     } catch (e) {
+     // print('❌ Error in capturePhoto: $e');
       emit(
         state.copyWith(
           isProcessing: false,
@@ -102,9 +111,23 @@ class CameraCubit extends Cubit<CameraState> {
     }
   }
 
+  Future<void> verifyAndSaveData() async {
+    if (state.finalData == null) {
+      return;
+    }
+
+    try {
+      await _saveCardUseCase.execute(state.finalData!);
+    //  print('✅ User data saved successfully on verify');
+    } catch (e) {
+    //  print('❌ Failed to save user data: $e');
+      rethrow; 
+    }
+  }
+
   Future<void> retakePhoto() async {
     if (!state.canRetake) return;
-
+    
     emit(
       state.copyWith(
         photo: null,
@@ -116,7 +139,7 @@ class CameraCubit extends Cubit<CameraState> {
         hasError: false,
       ),
     );
-
+    
     await openCamera();
   }
 

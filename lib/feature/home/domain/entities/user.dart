@@ -1,20 +1,41 @@
+// domain/entities/user.dart
 import 'package:mobile_app/feature/home/domain/entities/user_org.dart';
 
 class User {
-  final String nationalId;
-  final String firstName;
-  final String lastName;
-  String get fullName => '$firstName $lastName';
-  final String? birthDate;
-  final String email;
-  final List<UserOrg> organizations;
-
-  User(
-    this.firstName,
-    this.lastName, {
+  // ========== Local Data (من البطاقة) ==========
+  final String nationalId;      
+  final String firstNameAr;        
+  final String lastNameAr;          
+  final String? address;            
+  final String? birthDate;           
+  
+  // ========== Remote Data (من الـ API) ==========
+  final String? email;          
+  final String? firstNameEn;        
+  final String? lastNameEn;       
+  final List<UserOrg>? organizations;
+  
+  // ========== Profile Data ==========
+  final String? profileImage;      
+  
+  User({
     required this.nationalId,
+    required this.firstNameAr,
+    required this.lastNameAr,
+    this.address,
     this.birthDate,
-    required this.email,
-    required this.organizations,
+    this.email,
+    this.firstNameEn,
+    this.lastNameEn,
+    this.organizations,
+    this.profileImage,
   });
+  
+  // Getters
+  String get fullNameAr => '$firstNameAr $lastNameAr';
+  String get fullNameEn => firstNameEn != null && lastNameEn != null
+      ? '$firstNameEn $lastNameEn'
+      : fullNameAr;
+  
+  bool get isRegistered => email != null && organizations != null;
 }

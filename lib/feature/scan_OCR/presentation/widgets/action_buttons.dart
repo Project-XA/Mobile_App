@@ -18,22 +18,18 @@ class ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Processing
     if (state.isProcessing) {
       return _buildProcessingIndicator();
     }
 
-    // Success - show verify and retake
     if (state.showResult) {
       return _buildVerifyAndRetakeButtons(context);
     }
 
-    // ✅ Error - show retake only
     if (state.hasError) {
       return _buildErrorState(context);
     }
 
-    // Ready to capture
     return _buildCaptureButton(context);
   }
 
@@ -51,16 +47,16 @@ class ActionButtons extends StatelessWidget {
           SizedBox(
             width: 20.w,
             height: 20.h,
-            child: CircularProgressIndicator(
+            child:const CircularProgressIndicator(
               strokeWidth: 2,
               valueColor: AlwaysStoppedAnimation<Color>(
                 AppColors.mainTextColorBlack,
               ),
             ),
           ),
-          SizedBox(width: 12.w),
+          horizontalSpace( 12.w),
           Text(
-            "Processing...",
+            "Processing ID Card...",
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeightHelper.semiBold,
@@ -77,8 +73,18 @@ class ActionButtons extends StatelessWidget {
       children: [
         Expanded(
           child: CustomAppButton(
-            onPressed: () {
-              context.pushNamed(Routes.registrationToOrganization);
+            onPressed: () async {
+              try {
+                await context.read<CameraCubit>().verifyAndSaveData();
+                
+                if (context.mounted) {
+                  context.pushNamed(Routes.registeScreen);
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  _showErrorDialog(context, 'Failed to save data: $e');
+                }
+              }
             },
             backgroundColor: Colors.green,
             child: Row(
@@ -150,7 +156,7 @@ class ActionButtons extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 12.h),
+        verticalSpace( 12.h),
         SizedBox(
           width: double.infinity,
           child: CustomAppButton(
@@ -189,6 +195,22 @@ class ActionButtons extends StatelessWidget {
           "Capture",
           style: AppTextStyle.font15SemiBoldWhite.copyWith(fontSize: 16.sp),
         ),
+      ),
+    );
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
       ),
     );
   }

@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/feature/registration_to_organization/domain/repo/registration_to_organization_repo.dart';
 
 part 'user_role_state.dart';

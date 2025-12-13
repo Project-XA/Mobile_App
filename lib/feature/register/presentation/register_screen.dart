@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mobile_app/core/services/extensions.dart';
+import 'package:mobile_app/core/services/spacing.dart';
+import 'package:mobile_app/core/themes/app_colors.dart';
+import 'widgets/register_header.dart';
+import 'widgets/register_form.dart';
+
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.backGroundColorWhite,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [_buildTopSection(context), _buildMainContent()],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopSection(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.mainTextColorBlack,
+            AppColors.mainTextColorBlack.withOpacity(0.8),
+          ],
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(30.r),
+          bottomRight: Radius.circular(30.r),
+        ),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                onPressed: () => context.pop(),
+                icon: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.white,
+                  size: 22.sp,
+                ),
+              ),
+            ),
+          ),
+          const RegisterHeader(),
+          verticalSpace(20.h),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMainContent() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
+      child: Column(
+        children: [
+          verticalSpace(20.h),
+          const RegisterForm(),
+          verticalSpace(20.h),
+        ],
+      ),
+    );
+  }
+}
