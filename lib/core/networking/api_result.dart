@@ -1,7 +1,8 @@
 
 
-import 'package:mobile_app/core/networking/api_error_handler.dart';
-import 'package:mobile_app/core/networking/api_error_model.dart';
+
+import 'api_error_handler.dart';
+import 'api_error_model.dart';
 
 class ApiResult<T> {
   ApiResult._();

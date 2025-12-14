@@ -26,7 +26,7 @@ class UserRoleCubit extends Cubit<UserRoleState> {
         emit(UserRoleSuccess(role));
       },
       onError: (error) {
-        emit(UserRoleFailure(error.message));
+        emit(UserRoleFailure(error.toString()));
       },
     );
   }

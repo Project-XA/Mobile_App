@@ -1,0 +1,6 @@
+targets:
+  $default:
+    builders:
+      retrofit_generator:
+        options:
+          generate_error_logger: false

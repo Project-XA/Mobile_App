@@ -1,13 +1,51 @@
-import 'package:flutter/widgets.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ApiErrorModel {
-  final String message;
-  final IconData icon;
-  final int statusCode;
+part 'api_error_model.freezed.dart';
 
-  ApiErrorModel({
-    required this.message,
-    required this.icon,
-    required this.statusCode,
-  });
+@freezed
+class ApiErrorModel with _$ApiErrorModel {
+  const factory ApiErrorModel({
+    required String message,
+    required ApiErrorType type,
+    required int statusCode,
+    String? errorCode,
+  }) = _ApiErrorModel;
+}
+
+enum ApiErrorType {
+  connectionError,
+  connectionTimeout,
+  sendTimeout,
+  receiveTimeout,
+  badCertificate,
+  badResponse,
+  cancel,
+  unknown,
+  defaultError,
+}
+
+// Extension لتحويل Enum لـ Icon في الـ UI
+extension ApiErrorTypeExtension on ApiErrorType {
+  String get iconName {
+    switch (this) {
+      case ApiErrorType.connectionError:
+        return 'wifi_off';
+      case ApiErrorType.connectionTimeout:
+        return 'timer_off';
+      case ApiErrorType.sendTimeout:
+        return 'send';
+      case ApiErrorType.receiveTimeout:
+        return 'downloading';
+      case ApiErrorType.badCertificate:
+        return 'security';
+      case ApiErrorType.badResponse:
+        return 'warning';
+      case ApiErrorType.cancel:
+        return 'cancel';
+      case ApiErrorType.unknown:
+        return 'error_outline';
+      case ApiErrorType.defaultError:
+        return 'error';
+    }
+  }
 }

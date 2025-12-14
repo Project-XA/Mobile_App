@@ -1,66 +1,98 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:mobile_app/core/networking/api_error_factory.dart';
 import 'package:mobile_app/core/networking/api_error_model.dart';
-import 'package:mobile_app/core/networking/dio_exception_type_extension.dart';
 import 'package:mobile_app/core/networking/local_status_codes.dart';
-
 
 class ApiErrorHandler {
   static ApiErrorModel handle(dynamic e) {
-    if (e is Exception) {
-      if (e is DioException) {
-        return e.when(
-          connectionError: () => ApiErrorModel(
+    if (e is DioException) {
+      switch (e.type) {
+        case DioExceptionType.connectionError:
+          return const ApiErrorModel(
             message:
                 "No internet connection. Please check your Wi-Fi or mobile data.",
-            icon: Icons.wifi_off,
+            type: ApiErrorType.connectionError,
             statusCode: LocalStatusCodes.connectionError,
-          ),
-          connectionTimeout: () => ApiErrorModel(
+          );
+
+        case DioExceptionType.connectionTimeout:
+          return const ApiErrorModel(
             message:
                 "The connection took too long. Try checking your internet or try again later.",
-            icon: Icons.timer_off,
+            type: ApiErrorType.connectionTimeout,
             statusCode: LocalStatusCodes.connectionTimeout,
-          ),
-          sendTimeout: () => ApiErrorModel(
+          );
+
+        case DioExceptionType.sendTimeout:
+          return const ApiErrorModel(
             message: "Request timed out while sending data. Please try again.",
-            icon: Icons.send,
+            type: ApiErrorType.sendTimeout,
             statusCode: LocalStatusCodes.sendTimeout,
-          ),
-          receiveTimeout: () => ApiErrorModel(
+          );
+
+        case DioExceptionType.receiveTimeout:
+          return const ApiErrorModel(
             message: "Server took too long to respond. Please try again later.",
-            icon: Icons.downloading,
+            type: ApiErrorType.receiveTimeout,
             statusCode: LocalStatusCodes.receiveTimeout,
-          ),
-          badCertificate: () => ApiErrorModel(
+          );
+
+        case DioExceptionType.badCertificate:
+          return const ApiErrorModel(
             message:
                 "Security issue detected with the server. Connection not secure.",
-            icon: Icons.security,
+            type: ApiErrorType.badCertificate,
             statusCode: LocalStatusCodes.badCertificate,
-          ),
-          badResponse: () => ApiErrorModel(
-            message:
-                "Server returned an unexpected response. Please try again.",
-            icon: Icons.warning,
+          );
+
+        case DioExceptionType.badResponse:
+          // استخرج الرسالة من الـ Response
+          final errorMessage = _extractErrorMessage(e.response);
+          return ApiErrorModel(
+            message: errorMessage,
+            type: ApiErrorType.badResponse,
             statusCode: e.response?.statusCode ?? LocalStatusCodes.badResponse,
-          ),
-          cancel: () => ApiErrorModel(
+            errorCode: _extractErrorCode(e.response),
+          );
+
+        case DioExceptionType.cancel:
+          return const ApiErrorModel(
             message: "The request was cancelled. Please try again.",
-            icon: Icons.cancel,
+            type: ApiErrorType.cancel,
             statusCode: LocalStatusCodes.cancel,
-          ),
-          unknown: () => ApiErrorModel(
+          );
+
+        case DioExceptionType.unknown:
+          return const ApiErrorModel(
             message:
                 "Something went wrong. Please check your connection and try again.",
-            icon: Icons.error_outline,
+            type: ApiErrorType.unknown,
             statusCode: LocalStatusCodes.unknown,
-          ),
-        );
-      } else {
-        return ApiErrorFactory.defaultError;
-      }
+          );
+
+        }
     }
     return ApiErrorFactory.defaultError;
+  }
+
+  static String _extractErrorMessage(Response? response) {
+    if (response?.data != null) {
+      final data = response!.data;
+      
+      if (data is Map<String, dynamic>) {
+        return data['message'] ?? 
+               data['error'] ?? 
+               data['msg'] ?? 
+               'Server returned an error';
+      }
+    }
+    return 'Server returned an unexpected response';
+  }
+
+  static String? _extractErrorCode(Response? response) {
+    if (response?.data != null && response!.data is Map<String, dynamic>) {
+      return response.data['error_code']?.toString();
+    }
+    return null;
   }
 }

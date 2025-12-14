@@ -1,4 +1,6 @@
 class ApiConst {
-  static String baseurl = 'https://dummyjson.com/';
-  static String products = 'products';
+  static const String baseurl = '';
+  static const  String register = '/get-user-role';
+
+  static const String refreshToken = "null";
 }

@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mobile_app/core/DI/get_it.dart';
+import 'package:mobile_app/core/Data/local_data_soruce/user_local_data_source.dart';
+import 'package:mobile_app/core/routing/routes.dart';
 import 'package:mobile_app/core/services/app_regex.dart';
+import 'package:mobile_app/core/services/extensions.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
 import 'package:mobile_app/core/themes/font_weight_helper.dart';
 import 'package:mobile_app/core/widgets/app_text_form_field.dart';
 import 'package:mobile_app/core/widgets/custom_app_button.dart';
+import 'package:mobile_app/feature/register/presentation/logic/register_cubit.dart';
+import 'package:mobile_app/feature/register/presentation/logic/register_state.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -21,7 +28,6 @@ class _RegisterFormState extends State<RegisterForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -33,34 +39,88 @@ class _RegisterFormState extends State<RegisterForm> {
 
   Future<void> _handleRegister() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-      await Future.delayed(const Duration(seconds: 2));
-      setState(() => _isLoading = false);
-      debugPrint('Organization ID: ${_orgIdController.text}');
-      debugPrint('Email: ${_emailController.text}');
-      debugPrint('Password: ${_passwordController.text}');
+      try {
+        final localDataSource = getIt<UserLocalDataSource>();
+        final localUserData = await localDataSource.getCurrentUser();
+
+        if (!mounted) return;
+
+        await context.read<RegisterCubit>().register(
+              orgId: _orgIdController.text.trim(),
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim(),
+              localUserData: localUserData,
+            );
+      } catch (e) {
+        if (!mounted) return;
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to get user data: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle('Account Information'),
-          verticalSpace(15.h),
-          _buildOrgIdField(),
-          verticalSpace(15.h),
-          _buildEmailField(),
-          verticalSpace(15.h),
-          _buildPasswordField(),
-          verticalSpace(20.h),
+    return BlocConsumer<RegisterCubit, RegisterState>(
+      listener: (context, state) {
+        if (state is RegisterLoadedState) {
+          // Success - Navigate
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Registered successfully as ${state.userRole}'),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 2),
+            ),
+          );
 
-          _buildRegisterButton(),
-        ],
-      ),
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (!mounted) return;
+            
+            if (state.userRole.toLowerCase() == 'admin') {
+              // ignore: use_build_context_synchronously
+              context.pushReplacmentNamed(Routes.adminHome);
+            } else {
+              
+              // ignore: use_build_context_synchronously
+              context.pushReplacmentNamed(Routes.adminHome);
+            }
+          });
+        } else if (state is RegisterFailureState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is RegisterLoadingState;
+
+        return Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle('Account Information'),
+              verticalSpace(15.h),
+              _buildOrgIdField(),
+              verticalSpace(15.h),
+              _buildEmailField(),
+              verticalSpace(15.h),
+              _buildPasswordField(),
+              verticalSpace(20.h),
+              _buildRegisterButton(isLoading),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -195,7 +255,6 @@ class _RegisterFormState extends State<RegisterForm> {
             if (value == null || value.isEmpty) {
               return 'Password is required';
             }
-
             return null;
           },
         ),
@@ -224,14 +283,14 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 
-  Widget _buildRegisterButton() {
+  Widget _buildRegisterButton(bool isLoading) {
     return CustomAppButton(
-      onPressed: _isLoading ? null : _handleRegister,
+      onPressed: isLoading ? null : _handleRegister,
       backgroundColor: AppColors.mainTextColorBlack,
       borderRadius: 16.r,
       width: double.infinity,
       height: 46.h,
-      child: _isLoading
+      child: isLoading
           ? SizedBox(
               height: 24.h,
               width: 24.w,
