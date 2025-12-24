@@ -1,10 +1,8 @@
-// feature/home/presentation/admin/home/presentation/admin_home.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/DI/get_it.dart';
-import 'package:mobile_app/core/DI/init_admin_home.dart'; // ✅ Import this
+import 'package:mobile_app/core/DI/init_admin_home.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/utils/app_assets.dart';
@@ -25,7 +23,6 @@ class AdminHome extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final isSmallScreen = width < 360;
 
-    // ✅ Initialize dependencies synchronously before building
     initAdminHome();
 
     return BlocProvider(
@@ -34,20 +31,18 @@ class AdminHome extends StatelessWidget {
         backgroundColor: AppColors.backGroundColorWhite,
         body: BlocBuilder<AdminCubit, AdminState>(
           builder: (context, state) {
+            // Loading state
             if (state is AdminLoading || state is AdminInitial) {
               return const AdminHomeShimmer();
             }
 
+            // Error state
             if (state is AdminError) {
-              return _buildErrorView(context);
+              return _buildErrorView(context, state.message);
             }
 
-            // ✅ Get user from state
-            final user = state is AdminUserLoaded
-                ? state.user
-                : state is ToggleTabChanged
-                ? state.user
-                : null;
+            // Get user from state
+            final user = state is AdminStateWithUser ? state.user : null;
 
             if (user == null) {
               return const Center(child: Text('No user data'));
@@ -81,12 +76,12 @@ class AdminHome extends StatelessWidget {
 
                         verticalSpace(16.h),
 
-                        _buildToggleTabs(),
+                        _buildToggleTabs(state),
                       ],
                     ),
                   ),
 
-                  Expanded(child: _buildContent()),
+                  Expanded(child: _buildContent(state)),
                 ],
               ),
             );
@@ -96,14 +91,18 @@ class AdminHome extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorView(BuildContext context) {
+  Widget _buildErrorView(BuildContext context, String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.error_outline, size: 64.sp, color: Colors.red),
           verticalSpace(16.h),
-          Text('Failed to load user data', style: TextStyle(fontSize: 16.sp)),
+          Text(
+            message,
+            style: TextStyle(fontSize: 16.sp),
+            textAlign: TextAlign.center,
+          ),
           verticalSpace(16.h),
           ElevatedButton(
             onPressed: () => context.read<AdminCubit>().loadUser(),
@@ -114,13 +113,20 @@ class AdminHome extends StatelessWidget {
     );
   }
 
-  Widget _buildToggleTabs() {
-    return BlocBuilder<AdminCubit, AdminState>(
-      builder: (context, state) {
-        final selectedIndex = state is ToggleTabChanged
-            ? state.selectedIndex
-            : 0;
+  Widget _buildToggleTabs(AdminState state) {
+    final selectedIndex = state is AdminStateWithUser 
+        ? state.selectedTabIndex 
+        : 0;
 
+    return BlocBuilder<AdminCubit, AdminState>(
+      buildWhen: (previous, current) {
+        // Only rebuild when tab index changes
+        if (previous is AdminStateWithUser && current is AdminStateWithUser) {
+          return previous.selectedTabIndex != current.selectedTabIndex;
+        }
+        return true;
+      },
+      builder: (context, state) {
         return ToggleTabs(
           tabs: const ["Manage Sessions", "User Attendance"],
           selectedIndex: selectedIndex,
@@ -130,21 +136,20 @@ class AdminHome extends StatelessWidget {
     );
   }
 
-  Widget _buildContent() {
-    return BlocBuilder<AdminCubit, AdminState>(
-      builder: (context, state) {
-        final selectedIndex = state is ToggleTabChanged
-            ? state.selectedIndex
-            : 0;
+  Widget _buildContent(AdminState state) {
+    final selectedIndex = state is AdminStateWithUser 
+        ? state.selectedTabIndex 
+        : 0;
 
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: IndexedStack(
-            index: selectedIndex,
-            children: const [ManageSessionsView(), UserAttendanceView()],
-          ),
-        );
-      },
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: IndexedStack(
+        index: selectedIndex,
+        children: const [
+          ManageSessionsView(),
+          UserAttendanceView(),
+        ],
+      ),
     );
   }
 }

@@ -21,9 +21,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
   Future<void> _init() async {
     await initCore();
 
-    runApp(
-      AttendencyApp(appRouter: AppRoute(), initialRoute: Routes.registeScreen),
-    );
+    runApp(AttendencyApp(appRouter: AppRoute(), initialRoute: Routes.homePage));
   }
 
   @override

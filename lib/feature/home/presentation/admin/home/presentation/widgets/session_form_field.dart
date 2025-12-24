@@ -6,7 +6,7 @@ import 'package:mobile_app/core/themes/app_text_style.dart';
 import 'package:mobile_app/core/themes/font_weight_helper.dart';
 import 'package:mobile_app/core/widgets/app_text_form_field.dart';
 
-class SessionFormFields extends StatefulWidget { // ✅ غيرناها لـ StatefulWidget
+class SessionFormFields extends StatefulWidget { 
   final TextEditingController sessionNameController;
   final TextEditingController locationController;
   final TextEditingController durationController;
