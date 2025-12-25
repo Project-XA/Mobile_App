@@ -7,8 +7,6 @@ import 'package:mobile_app/core/routing/routes.dart';
 import 'package:mobile_app/core/services/extensions.dart';
 import 'package:mobile_app/core/services/onboarding_service.dart';
 import 'package:mobile_app/core/services/spacing.dart';
-import 'package:mobile_app/feature/home/data/models/user_model.dart';
-import 'package:mobile_app/feature/home/domain/entities/user.dart';
 import 'package:mobile_app/feature/register/presentation/logic/register_cubit.dart';
 import 'package:mobile_app/feature/register/presentation/logic/register_state.dart';
 import 'package:mobile_app/feature/register/presentation/widgets/register_form_firld.dart';
@@ -39,15 +37,15 @@ class _RegisterFormState extends State<RegisterForm> {
     if (_formKey.currentState!.validate()) {
       try {
          final localDataSource = getIt<UserLocalDataSource>();
-        //final localUserData = await localDataSource.getCurrentUser();
-        final user = UserModel(
-          nationalId: '123456667',
-          firstNameAr: 'عادل',
-          lastNameAr: 'محمد',
-          address: 'أسيوط - مصر',
-          birthDate: '1999-05-10',
-          profileImage: null,
-        );
+        final localUserData = await localDataSource.getCurrentUser();
+        // final user = UserModel(
+        //   nationalId: '123456667',
+        //   firstNameAr: 'عادل',
+        //   lastNameAr: 'محمد',
+        //   address: 'أسيوط - مصر',
+        //   birthDate: '1999-05-10',
+        //   profileImage: null,
+        // );
 
         if (!mounted) return;
 
@@ -55,7 +53,7 @@ class _RegisterFormState extends State<RegisterForm> {
           orgId: _orgIdController.text.trim(),
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
-          localUserData: user,
+          localUserData: localUserData,
         );
       } catch (e) {
         if (!mounted) return;

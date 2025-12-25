@@ -2,7 +2,6 @@
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/feature/home/domain/entities/user.dart';
-import 'package:mobile_app/feature/home/domain/entities/user_org.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/domain/usecases/get_current_user_use_case.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/domain/usecases/update_user_profile_image.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/domain/usecases/update_user_use_case.dart';
@@ -25,19 +24,19 @@ class UserProfileCubit extends Cubit<UserProfileState> {
   Future<void> loadUser() async {
     try {
       emit(UserProfileLoading());
-      //final user = await getCurrentUserUseCase.getCurrentUser();
-      final user = User(
-        nationalId: '123456667',
-        firstNameAr: 'عادل',
-        lastNameAr: 'محمد',
-        address: 'أسيوط - مصر',
-        birthDate: '1999-05-10',
-        email: 'adel@gmail.com',
-        firstNameEn: 'Adel',
-        lastNameEn: 'Mohamed',
-        organizations: [UserOrg(orgId: '1234', role: 'admin')],
-        profileImage: null,
-      );
+      final user = await getCurrentUserUseCase.getCurrentUser();
+      // final user = User(
+      //   nationalId: '123456667',
+      //   firstNameAr: 'عادل',
+      //   lastNameAr: 'محمد',
+      //   address: 'أسيوط - مصر',
+      //   birthDate: '1999-05-10',
+      //   email: 'adel@gmail.com',
+      //   firstNameEn: 'Adel',
+      //   lastNameEn: 'Mohamed',
+      //   organizations: [UserOrg(orgId: '1234', role: 'admin')],
+      //   profileImage: null,
+      // );
 
       _currentUser = user;
       emit(UserProfileLoaded(user));

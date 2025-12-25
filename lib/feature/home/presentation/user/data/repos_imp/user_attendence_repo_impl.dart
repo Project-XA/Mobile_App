@@ -57,7 +57,6 @@ class UserAttendanceRepositoryImpl implements UserAttendanceRepository {
 
       return response.success;
     } catch (e) {
-      print('❌ Check-in failed: $e');
       return false;
     }
   }
@@ -73,9 +72,9 @@ class UserAttendanceRepositoryImpl implements UserAttendanceRepository {
   Future<AttendanceStats> getAttendanceStats() async {
     // TODO: Fetch from actual backend
     // For demo purposes
-    final totalSessions = 24;
+    const totalSessions = 24;
     final attendedSessions = _historyCache.length;
-    final lateCount = 0;
+    const lateCount = 0;
     final percentage = totalSessions > 0
         ? (attendedSessions / totalSessions) * 100
         : 0.0;
@@ -105,7 +104,6 @@ class UserAttendanceRepositoryImpl implements UserAttendanceRepository {
       final hash = sha256.convert(bytes);
       return hash.toString();
     } catch (e) {
-      print('⚠️ Could not get device hash: $e');
       return 'unknown_device';
     }
   }

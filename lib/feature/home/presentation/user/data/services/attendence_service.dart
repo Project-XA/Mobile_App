@@ -45,7 +45,6 @@ class AttendanceService {
         );
       }
     } catch (e) {
-      print('❌ Attendance request failed: $e');
       return AttendanceResponse(
         success: false,
         message: 'Network error: $e',

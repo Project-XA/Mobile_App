@@ -87,8 +87,6 @@ class CameraCubit extends Cubit<CameraState> {
 
       final result = await _processUseCase.execute(photo);
 
-      // print('📋 OCR Result: ${result.finalData}');
-
       emit(
         state.copyWith(
           isProcessing: false,
@@ -99,7 +97,6 @@ class CameraCubit extends Cubit<CameraState> {
         ),
       );
     } catch (e) {
-      // print('❌ Error in capturePhoto: $e');
       emit(
         state.copyWith(
           isProcessing: false,
@@ -118,9 +115,7 @@ class CameraCubit extends Cubit<CameraState> {
 
     try {
       await _saveCardUseCase.execute(state.finalData!);
-      //  print('✅ User data saved successfully on verify');
     } catch (e) {
-      //  print('❌ Failed to save user data: $e');
       rethrow;
     }
   }

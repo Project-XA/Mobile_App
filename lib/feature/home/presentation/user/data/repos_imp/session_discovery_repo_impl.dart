@@ -55,7 +55,6 @@ class SessionDiscoveryRepositoryImpl implements SessionDiscoveryRepository {
       }
       return null;
     } catch (e) {
-      print('⚠️ Could not fetch session details: $e');
       return null;
     }
   }

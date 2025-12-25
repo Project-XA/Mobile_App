@@ -51,16 +51,6 @@ class SaveScannedCardUseCase {
       profileImage: null,
     );
 
-    // if (userModel.nationalId == 'N/A' || 
-    //     userModel.nationalId.isEmpty ||
-    //     userModel.nationalId.startsWith('UNKNOWN_')) {
-    //  // print(' Warning: National ID not found or using fallback');
-    // }
-
-    // if (userModel.firstNameAr == 'N/A' || userModel.lastNameAr == 'N/A') {
-    //   print(' Warning: Name fields not properly extracted');
-    // }
-
     await _dataSource.saveLocalUserData(userModel);
   }
 }

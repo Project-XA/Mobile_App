@@ -22,30 +22,22 @@ class SessionDiscoveryService {
       _discoveredSessionIds.clear(); // ✅ Clear previous sessions
       _sessionController = StreamController<DiscoveredSession>.broadcast();
 
-      print('🔍 Starting mDNS discovery...');
-
       // ✅ Try mDNS first
       try {
         _discovery = await nsd.startDiscovery('_http._tcp');
 
         _discovery!.addServiceListener((service, status) {
           if (status == nsd.ServiceStatus.found) {
-            print('📡 mDNS service found: ${service.name}');
             _handleDiscoveredService(service);
           }
         });
-
-        print('✅ mDNS discovery started successfully');
       } catch (e) {
-        print('⚠️ mDNS not available: $e');
+        // mDNS not available
       }
 
       // ✅ Start network scan immediately (don't wait for mDNS)
       _startNetworkScan();
-
-      print('✅ Session discovery started (mDNS + Network Scan)');
     } catch (e) {
-      print('❌ Discovery error: $e');
       // Continue with network scan even if mDNS fails
       _startNetworkScan();
     }
@@ -55,32 +47,26 @@ class SessionDiscoveryService {
   Future<void> _handleDiscoveredService(nsd.Service service) async {
     try {
       if (service.name == 'attendance') {
-        print('🎯 Found attendance service, resolving...');
-
         // Resolve service to get IP and port
         final resolved = await nsd.resolve(service);
 
         if (resolved.host != null && resolved.port != null) {
-          print('✅ Resolved to ${resolved.host}:${resolved.port}');
           await _verifyAndAddSession(resolved.host!, resolved.port!);
         }
       }
     } catch (e) {
-      print('⚠️ Error handling mDNS service: $e');
+      // Error handling mDNS service
     }
   }
 
   // Scan local network for sessions (backup method)
   void _startNetworkScan() {
-    print('🔍 Starting network scan...');
-
     // ✅ Scan immediately
     _scanLocalNetwork();
 
     // ✅ Then scan periodically
     _discoveryTimer?.cancel();
     _discoveryTimer = Timer.periodic(const Duration(seconds: 10), (_) {
-      print('🔄 Periodic network scan...');
       _scanLocalNetwork();
     });
   }
@@ -90,17 +76,13 @@ class SessionDiscoveryService {
       // Get local IP
       final localIp = await _getLocalIpAddress();
       if (localIp == null) {
-        print('⚠️ Could not get local IP address');
         return;
       }
-
-      print('📍 Local IP: $localIp');
 
       final parts = localIp.split('.');
       if (parts.length != 4) return;
 
       final networkPrefix = '${parts[0]}.${parts[1]}.${parts[2]}';
-      print('🌐 Scanning network: $networkPrefix.x');
 
       // ✅ Scan in parallel with better error handling
       final futures = <Future>[];
@@ -130,10 +112,8 @@ class SessionDiscoveryService {
       if (futures.isNotEmpty) {
         await Future.wait(futures, eagerError: false);
       }
-
-      print('✅ Network scan completed');
     } catch (e) {
-      print('⚠️ Network scan error: $e');
+      // Network scan error
     }
   }
 
@@ -145,7 +125,6 @@ class SessionDiscoveryService {
           .timeout(const Duration(seconds: 1)); // ✅ Reduced timeout
 
       if (response.statusCode == 200) {
-        print('✅ Found potential session at $ip:$port');
         await _verifyAndAddSession(ip, port);
       }
     } catch (_) {
@@ -195,11 +174,10 @@ class SessionDiscoveryService {
               );
 
               _sessionController?.add(session);
-              print('🎉 Session discovered: ${session.name} at $host:$port');
               return;
             }
           } catch (e) {
-            print('⚠️ Could not fetch session-info from $host:$port: $e');
+            // Could not fetch session-info
           }
 
           // ✅ Fallback: create basic session if /session-info fails
@@ -213,7 +191,6 @@ class SessionDiscoveryService {
           );
 
           _sessionController?.add(session);
-          print('✅ Session discovered (basic info): $host:$port');
         }
       }
     } catch (e) {
@@ -239,10 +216,8 @@ class SessionDiscoveryService {
         }
       }
 
-      print('⚠️ No local IP found in 192.168.x.x or 10.x.x.x range');
       return null;
     } catch (e) {
-      print('❌ Error getting IP: $e');
       return null;
     }
   }
@@ -262,10 +237,8 @@ class SessionDiscoveryService {
       _sessionController = null;
 
       _discoveredSessionIds.clear();
-
-      print('✅ Session discovery stopped');
     } catch (e) {
-      print('❌ Error stopping discovery: $e');
+      // Error stopping discovery
     }
   }
 

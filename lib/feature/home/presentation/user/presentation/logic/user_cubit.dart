@@ -111,8 +111,6 @@ class UserCubit extends Cubit<UserState> {
         (_) => _refreshSessions(),
       );
     } catch (e) {
-      print('❌ Discovery start failed: $e');
-
       emit(
         UserIdle(
           user: currentState.user,
@@ -125,8 +123,6 @@ class UserCubit extends Cubit<UserState> {
   void _handleSearchTimeout() {
     final currentState = state;
     if (currentState is! SessionDiscoveryActive) return;
-
-    print('⏰ Search timeout');
 
     // ✅ Check if we have sessions
     final hasSessions = currentState.discoveredSessions.isNotEmpty;
@@ -142,8 +138,6 @@ class UserCubit extends Cubit<UserState> {
   void _handleDiscoveredSession(NearbySession session) {
     final currentState = state;
     if (currentState is! SessionDiscoveryActive) return;
-
-    print('✅ Session discovered: ${session.name} at ${session.ipAddress}');
 
     final existingSessions = currentState.discoveredSessions;
     final exists = existingSessions.any(
@@ -167,7 +161,7 @@ class UserCubit extends Cubit<UserState> {
   }
 
   void _handleDiscoveryError(dynamic error) {
-    print('❌ Discovery error: $error');
+    // Discovery error handled silently
   }
 
   Future<void> _refreshSessions() async {
@@ -216,7 +210,7 @@ class UserCubit extends Cubit<UserState> {
         );
       }
     } catch (e) {
-      print('❌ Stop discovery failed: $e');
+      // Stop discovery error handled silently
     }
   }
 
@@ -285,8 +279,6 @@ class UserCubit extends Cubit<UserState> {
         }
       }
     } catch (e) {
-      print('❌ Check-in error: $e');
-
       final failedState = CheckInState(
         user: currentState.user,
         session: session,
