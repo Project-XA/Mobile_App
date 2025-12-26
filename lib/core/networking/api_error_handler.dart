@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:mobile_app/core/networking/api_error_factory.dart';
 import 'package:mobile_app/core/networking/api_error_model.dart';
 import 'package:mobile_app/core/networking/local_status_codes.dart';
 
@@ -46,8 +45,8 @@ class ApiErrorHandler {
           );
 
         case DioExceptionType.badResponse:
-          // استخرج الرسالة من الـ Response
-          final errorMessage = _extractErrorMessage(e.response);
+          final statusCode = e.response?.statusCode ?? LocalStatusCodes.badResponse;
+          final errorMessage = _extractErrorMessage(e.response, statusCode);
           return ApiErrorModel(
             message: errorMessage,
             type: ApiErrorType.badResponse,
@@ -71,11 +70,16 @@ class ApiErrorHandler {
           );
 
         }
+    } else {
+      return ApiErrorModel(
+        message: e.toString().replaceFirst('Exception: ', ''),
+        type: ApiErrorType.unknown,
+        statusCode: LocalStatusCodes.unknown,
+      );
     }
-    return ApiErrorFactory.defaultError;
   }
 
-  static String _extractErrorMessage(Response? response) {
+  static String _extractErrorMessage(Response? response,int statusCode) {
     if (response?.data != null) {
       final data = response!.data;
       

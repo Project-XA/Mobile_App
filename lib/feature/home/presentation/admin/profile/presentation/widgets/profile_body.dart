@@ -35,15 +35,14 @@ class ProfileBody extends StatelessWidget {
               ),
               verticalSpace(15.h),
 
-              FirstNameCard(firstNameAr: user.firstNameAr),
+              FirstNameCard(firstNameAr: user.firstNameEn!),
 
               verticalSpace(12.h),
 
-              LastNameCard(lastNameAr: user.lastNameAr),
+              LastNameCard(lastNameAr: user.lastNameEn!),
 
               verticalSpace(12.h),
 
-              
               if (user.email != null) EmailCard(email: user.email!),
 
               verticalSpace(12.h),

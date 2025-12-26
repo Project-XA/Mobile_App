@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mobile_app/core/DI/get_it.dart';
+import 'package:mobile_app/core/routing/routes.dart';
+import 'package:mobile_app/core/services/extensions.dart';
+import 'package:mobile_app/core/services/onboarding_service.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
@@ -68,7 +72,7 @@ class TopSection extends StatelessWidget {
 
                 verticalSpace(10.h),
 
-                UserNameSection(fullNameAr: user.fullNameAr),
+                UserNameSection(fullNameEn: user.fullNameEn),
 
                 verticalSpace(5.h),
 
@@ -113,8 +117,21 @@ class TopSection extends StatelessWidget {
             child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
+              // Close dialog first
               Navigator.pop(ctx);
+
+              // Perform logout
+              final onboardingService = getIt<OnboardingService>();
+              await onboardingService.logout();
+
+              // Navigate to register screen and clear all previous routes
+              if (!context.mounted) return;
+
+              context.pushNameAndRemoveUntil(
+                Routes.registeScreen,
+                predicate: (route) => false,
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.mainTextColorBlack,

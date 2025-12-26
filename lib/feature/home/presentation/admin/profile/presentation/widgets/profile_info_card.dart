@@ -15,14 +15,15 @@ class FirstNameCard extends StatelessWidget {
       icon: Icons.person,
       label: 'First Name',
       value: firstNameAr,
-      onEdit: () => showEditDialog(
-        context,
-        'First Name',
-        firstNameAr,
-        (newValue) => context.read<UserProfileCubit>().updateUser(
-              firstNameAr: newValue,
-            ),
-      ),
+      onEdit: null,
+      //showEditDialog(
+      //   context,
+      //   'First Name',
+      //   firstNameAr,
+      //   (newValue) => context.read<UserProfileCubit>().updateUser(
+      //         firstNameAr: newValue,
+      //       ),
+      // ),
     );
   }
 }
@@ -38,14 +39,14 @@ class LastNameCard extends StatelessWidget {
       icon: Icons.person_outline,
       label: 'Last Name',
       value: lastNameAr,
-      onEdit: () => showEditDialog(
-        context,
-        'Last Name',
-        lastNameAr,
-        (newValue) => context.read<UserProfileCubit>().updateUser(
-              lastNameAr: newValue,
-            ),
-      ),
+      onEdit: null,
+      // () => showEditDialog(
+      //   context,
+      //   'Last Name',
+      //   lastNameAr,
+      //   (newValue) =>
+      //       context.read<UserProfileCubit>().updateUser(lastNameAr: newValue),
+      // ),
     );
   }
 }
@@ -61,14 +62,14 @@ class EmailCard extends StatelessWidget {
       icon: Icons.email,
       label: 'Email',
       value: email,
-      onEdit: () => showEditDialog(
-        context,
-        'Email',
-        email,
-        (newValue) => context.read<UserProfileCubit>().updateUser(
-              email: newValue,
-            ),
-      ),
+      onEdit: null,
+      // () => showEditDialog(
+      //   context,
+      //   'Email',
+      //   email,
+      //   (newValue) =>
+      //       context.read<UserProfileCubit>().updateUser(email: newValue),
+      // ),
     );
   }
 }
@@ -104,9 +105,8 @@ class AddressCard extends StatelessWidget {
         context,
         'Address',
         address,
-        (newValue) => context.read<UserProfileCubit>().updateUser(
-              address: newValue,
-            ),
+        (newValue) =>
+            context.read<UserProfileCubit>().updateUser(address: newValue),
       ),
     );
   }

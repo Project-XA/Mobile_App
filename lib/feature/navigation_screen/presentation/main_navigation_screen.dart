@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/DI/init_admin_home.dart';
 import 'package:mobile_app/core/DI/init_profile.dart';
@@ -35,9 +36,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       const ProfileScreen(),
     ];
 
-    return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: screens),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: () async {
+        SystemNavigator.pop();
+        return false;
+      },
+      child: Scaffold(
+        body: IndexedStack(index: _currentIndex, children: screens),
+        bottomNavigationBar: _buildBottomNavigationBar(),
+      ),
     );
   }
 

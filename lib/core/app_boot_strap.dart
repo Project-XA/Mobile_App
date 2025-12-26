@@ -1,4 +1,3 @@
-// core/app_boot_strap.dart
 import 'package:flutter/material.dart';
 import 'package:mobile_app/attendency_app.dart';
 import 'package:mobile_app/core/DI/get_it.dart';
@@ -28,13 +27,17 @@ class _AppBootstrapState extends State<AppBootstrap> {
 
   Future<void> _init() async {
     await initCore();
+    
     final onboardingService = getIt<OnboardingService>();
+    
+    // Check if user is logged in
+    final isLoggedIn = await onboardingService.isLoggedIn();
     final hasCompleted = await onboardingService.hasCompletedOnboarding();
-
+    
     String initialRoute;
     String? routeArgument;
 
-    if (hasCompleted) {
+    if (hasCompleted && isLoggedIn) {
       final userRole = await onboardingService.getUserRole();
       initialRoute = Routes.mainNavigation;
       routeArgument = userRole ?? 'User';
@@ -57,7 +60,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
 
   @override
   Widget build(BuildContext context) {
-    // لو لسه بيحمّل أو الأنيميشن شغال، نعرض الـ animated splash
+    // Show animated splash while loading
     if (!_isInitialized || _showAnimatedSplash) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,

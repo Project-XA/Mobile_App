@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/services/spacing.dart';
+import 'package:mobile_app/core/services/toast_service.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
 import 'package:mobile_app/core/themes/font_weight_helper.dart';
@@ -38,12 +39,7 @@ class _CreateSessionFormState extends State<CreateSessionForm> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select session start time'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      showToast(message: 'Please select a time',type: ToastType.error);
       return;
     }
 
@@ -61,9 +57,7 @@ class _CreateSessionFormState extends State<CreateSessionForm> {
     return BlocConsumer<AdminCubit, AdminState>(
       listener: (context, state) {
         if (state is SessionError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
-          );
+          showToast(message: state.message,type: ToastType.error);
         }
       },
       builder: (context, state) {

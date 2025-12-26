@@ -30,20 +30,10 @@ class UserRemoteDataSourceImp implements UserRemoteDataSource {
 
         final apiResponse = RegisterResponseBody.fromJson(data);
         
-        
-        
         return apiResponse;
-        
-      } else if (response.statusCode == 400) {
-        final message = response.data['message'] ?? 'Invalid credentials';
-        throw Exception(message);
-        
-      } else if (response.statusCode == 404) {
-        throw Exception('Organization not found');
-        
-      } else {
-        throw Exception('Registration failed: ${response.statusCode}');
       }
+      
+      throw Exception('Registration failed: ${response.statusCode}');
       
     } catch (e) {
      

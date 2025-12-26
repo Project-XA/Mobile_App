@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:mobile_app/core/services/camera_permission_service.dart';
 import 'package:mobile_app/feature/scan_OCR/data/model/ml_models/card_service_model.dart';
 import 'package:mobile_app/feature/scan_OCR/data/model/ml_models/id_service_model.dart';
 import 'package:mobile_app/feature/scan_OCR/data/model/ml_models/field_service_model.dart';
@@ -23,7 +24,10 @@ class CameraRepImp implements CameraRepository {
   // Helper service for field processing
   late final FieldProcessingService _fieldProcessingService;
 
-  CameraRepImp() {
+  final CameraPermissionService _permissionService;
+
+  CameraRepImp({CameraPermissionService? permissionService})
+      : _permissionService = permissionService ?? CameraPermissionService() {
     _cardModel = CardServiceModel();
     _fieldModel = FieldServiceModel();
     _idModel = IdServiceModel();
@@ -33,7 +37,24 @@ class CameraRepImp implements CameraRepository {
   // ========== Camera Operations ==========
   @override
   Future<void> openCamera() async {
+    // Check camera permission first
+    final hasPermission = await _permissionService.isCameraPermissionGranted();
+
+    if (!hasPermission) {
+      // Request permission
+      final granted = await _permissionService.requestCameraPermission();
+      if (!granted) {
+        throw CameraPermissionException(
+          'Camera permission is required to scan ID cards.',
+        );
+      }
+    }
+
     final cameras = await availableCameras();
+    if (cameras.isEmpty) {
+      throw Exception('No cameras available on this device');
+    }
+
     final backCamera = cameras.first;
 
     _controller = CameraController(
@@ -136,4 +157,13 @@ class CameraRepImp implements CameraRepository {
 
   @override
   CameraController? get controller => _controller;
+}
+
+/// Custom exception for camera permission errors
+class CameraPermissionException implements Exception {
+  final String message;
+  CameraPermissionException(this.message);
+
+  @override
+  String toString() => message;
 }

@@ -38,6 +38,7 @@ dependencies:
   nsd: ^4.0.4
   path: ^1.9.1
   path_provider: ^2.1.5
+  permission_handler: ^12.0.1
   pretty_dio_logger: ^1.4.0
   retrofit: ^4.4.1
   shared_preferences: ^2.5.3
@@ -79,5 +80,3 @@ flutter_assets:
   assets_path: assets/images/
   output_path: lib/core/utils/
   filename: app_assets.dart
-
-

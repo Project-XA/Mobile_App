@@ -205,4 +205,3 @@ class CameraBox extends StatelessWidget {
     return Colors.grey;
   }
 }
-

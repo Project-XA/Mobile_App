@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/DI/get_it.dart';
 import 'package:mobile_app/core/DI/register_get_it.dart';
-import 'package:mobile_app/core/services/extensions.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/feature/register/presentation/logic/register_cubit.dart';
@@ -18,12 +18,19 @@ class RegisterScreen extends StatelessWidget {
     initRegister();
     return BlocProvider(
       create: (context) => getIt<RegisterCubit>(),
-      child: Scaffold(
-        backgroundColor: AppColors.backGroundColorWhite,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [_buildTopSection(context), _buildMainContent()],
+      // ignore: deprecated_member_use
+      child: WillPopScope(
+        onWillPop: () async {
+          SystemNavigator.pop();
+          return false;
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.backGroundColorWhite,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [_buildTopSection(context), _buildMainContent()],
+              ),
             ),
           ),
         ),
@@ -51,20 +58,7 @@ class RegisterScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                onPressed: () => context.pop(),
-                icon: Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.white,
-                  size: 22.sp,
-                ),
-              ),
-            ),
-          ),
+          verticalSpace(50.h),
           const RegisterHeader(),
           verticalSpace(20.h),
         ],

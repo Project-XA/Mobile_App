@@ -47,9 +47,32 @@
 		<true/>
 		<key>NSFaceIDUsageDescription</key>
 		<string>We need face id to login in app</string>
-		<key>UIStatusBarHidden</key>
-		<true/>
-		<key>UIViewControllerBasedStatusBarAppearance</key>
-		<false/>
-	</dict>
+		<key>NSCameraUsageDescription</key>
+		<string>We need camera access to scan ID cards and documents</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>We need photo library access to select and read images</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>We need permission to save images to your photo library</string>
+		<key>NSLocalNetworkUsageDescription</key>
+		<string>We need local network access to discover and connect to attendance sessions</string>
+		<key>NSBonjourServices</key>
+		<array>
+			<string>_attendance._tcp</string>
+		</array>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>processing</string>
+		</array>
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<false/>
+			<key>NSAllowsLocalNetworking</key>
+			<true/>
+		</dict>
+	<key>UIStatusBarHidden</key>
+	<true/>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+</dict>
 </plist>

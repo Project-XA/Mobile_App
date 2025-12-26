@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app/core/services/spacing.dart';
+import 'package:mobile_app/core/services/toast_service.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
 import 'package:mobile_app/core/themes/font_weight_helper.dart';
@@ -223,12 +224,7 @@ class ActiveSessionView extends StatelessWidget {
         InkWell(
           onTap: () {
             Clipboard.setData(ClipboardData(text: value));
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Copied: $value'),
-                duration: const Duration(seconds: 1),
-              ),
-            );
+            showToast(message: 'Copied: $value',type: ToastType.success);
           },
           child: Icon(Icons.copy, size: 16.sp, color: Colors.blue),
         ),

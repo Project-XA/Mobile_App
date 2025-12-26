@@ -3,14 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
 
 class UserNameSection extends StatelessWidget {
-  final String fullNameAr;
+  final String fullNameEn;
 
-  const UserNameSection({super.key, required this.fullNameAr});
+  const UserNameSection({super.key, required this.fullNameEn});
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      fullNameAr,
+      fullNameEn,
       style: AppTextStyle.font14MediamGrey.copyWith(
         color: Colors.white,
         fontSize: 22.sp,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/services/spacing.dart';
+import 'package:mobile_app/core/services/toast_service.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/logic/user_profile_cubit.dart';
@@ -10,7 +11,7 @@ import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/widgets/profile_body.dart';
 
 class ProfileScreenBody extends StatelessWidget {
- const ProfileScreenBody({super.key});
+  const ProfileScreenBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,26 +20,17 @@ class ProfileScreenBody extends StatelessWidget {
       body: BlocListener<UserProfileCubit, UserProfileState>(
         listener: (context, state) {
           if (state is UserProfileFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
+            showToast(message: state.message, type: ToastType.error);
           } else if (state is ProfileImageUpdated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Image updated successfully'),
-                backgroundColor: Colors.green,
-              ),
+            showToast(
+              message: 'Profile image updated successfully',
+              type: ToastType.success,
             );
           } else if (state is ProfileUpdated) {
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Profile updated successfully'),
-                backgroundColor: Colors.green,
-              ),
+            showToast(
+              message: 'Profile updated successfully',
+              type: ToastType.success,
             );
           }
         },

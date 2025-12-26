@@ -7,6 +7,8 @@ import 'package:mobile_app/core/routing/routes.dart';
 import 'package:mobile_app/core/services/extensions.dart';
 import 'package:mobile_app/core/services/onboarding_service.dart';
 import 'package:mobile_app/core/services/spacing.dart';
+import 'package:mobile_app/core/services/toast_service.dart';
+import 'package:mobile_app/feature/home/data/models/user_model.dart';
 import 'package:mobile_app/feature/register/presentation/logic/register_cubit.dart';
 import 'package:mobile_app/feature/register/presentation/logic/register_state.dart';
 import 'package:mobile_app/feature/register/presentation/widgets/register_form_firld.dart';
@@ -36,16 +38,16 @@ class _RegisterFormState extends State<RegisterForm> {
   Future<void> _handleRegister() async {
     if (_formKey.currentState!.validate()) {
       try {
-         final localDataSource = getIt<UserLocalDataSource>();
-        final localUserData = await localDataSource.getCurrentUser();
-        // final user = UserModel(
-        //   nationalId: '123456667',
-        //   firstNameAr: 'عادل',
-        //   lastNameAr: 'محمد',
-        //   address: 'أسيوط - مصر',
-        //   birthDate: '1999-05-10',
-        //   profileImage: null,
-        // );
+        // final localDataSource = getIt<UserLocalDataSource>();
+        // final localUserData = await localDataSource.getCurrentUser();
+        final user = UserModel(
+          nationalId: '123456667',
+          firstNameAr: 'عادل',
+          lastNameAr: 'محمد',
+          address: 'أسيوط - مصر',
+          birthDate: '1999-05-10',
+          profileImage: null,
+        );
 
         if (!mounted) return;
 
@@ -53,16 +55,14 @@ class _RegisterFormState extends State<RegisterForm> {
           orgId: _orgIdController.text.trim(),
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
-          localUserData: localUserData,
+          localUserData: user,
         );
       } catch (e) {
         if (!mounted) return;
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to get user data: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
+        showToast(
+          message: 'Failed to get user data: ${e.toString()}',
+          type: ToastType.error,
         );
       }
     }
@@ -80,14 +80,10 @@ class _RegisterFormState extends State<RegisterForm> {
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
+    showToast(
+      message:
           'Registered successfully as ${state.user.organizations?.first.role}',
-        ),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 2),
-      ),
+      type: ToastType.success,
     );
 
     Future.delayed(const Duration(milliseconds: 500), () {
@@ -97,13 +93,7 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void _handleError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 3),
-      ),
-    );
+    showToast(message: message, type: ToastType.error);
   }
 
   @override
