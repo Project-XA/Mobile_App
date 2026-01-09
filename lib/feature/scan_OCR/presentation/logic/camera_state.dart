@@ -16,6 +16,7 @@ class CameraState {
   final Map<String, String>? extractedText;
   final Map<String, String>? finalData;
   final bool hasError;
+  final bool hasPermissionDenied; // جديد
 
   const CameraState({
     this.controller,
@@ -29,6 +30,7 @@ class CameraState {
     this.extractedText,
     this.finalData,
     this.hasError = false,
+    this.hasPermissionDenied = false, // جديد
   });
 
   
@@ -40,6 +42,7 @@ class CameraState {
   bool get isInvalidCard => hasCaptured && !showResult && !isProcessing;
 
   CameraStatus get cameraStatus {
+    if (hasPermissionDenied) return CameraStatus.permissionDenied; // جديد
     if (isInitializing) return CameraStatus.initializing;
     if (isOpened) return CameraStatus.ready;
     if (hasError) return CameraStatus.error;
@@ -83,6 +86,7 @@ class CameraState {
     bool? isProcessing,
     bool? showResult,
     bool? hasError,
+    bool? hasPermissionDenied, // جديد
     List<CroppedField>? croppedFields,
     Map<String, String>? extractedText,
     Map<String, String>? finalData,
@@ -96,6 +100,7 @@ class CameraState {
       isProcessing: isProcessing ?? this.isProcessing,
       showResult: showResult ?? this.showResult,
       hasError: hasError ?? this.hasError,
+      hasPermissionDenied: hasPermissionDenied ?? this.hasPermissionDenied, // جديد
       croppedFields: croppedFields ?? this.croppedFields,
       extractedText: extractedText ?? this.extractedText,
       finalData: finalData ?? this.finalData,
@@ -115,7 +120,8 @@ class CameraState {
         other.photo == photo &&
         other.isProcessing == isProcessing &&
         other.showResult == showResult &&
-        other.hasError == hasError;
+        other.hasError == hasError &&
+        other.hasPermissionDenied == hasPermissionDenied; // جديد
   }
 
   @override
@@ -127,7 +133,8 @@ class CameraState {
         photo.hashCode ^
         isProcessing.hashCode ^
         showResult.hashCode ^
-        hasError.hashCode;
+        hasError.hashCode ^
+        hasPermissionDenied.hashCode; // جديد
   }
 
   @override
@@ -139,6 +146,7 @@ class CameraState {
         'isProcessing: $isProcessing, '
         'showResult: $showResult, '
         'hasError: $hasError, '
+        'hasPermissionDenied: $hasPermissionDenied, ' // جديد
         'extractedFields: $extractedFieldsCount'
         ')';
   }

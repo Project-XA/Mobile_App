@@ -2,7 +2,8 @@ enum CameraStatus {
   closed, 
   initializing, 
   ready, 
-  error 
+  error,
+  permissionDenied // جديد
 }
 
 extension CameraStatusExtension on CameraStatus {
@@ -16,9 +17,12 @@ extension CameraStatusExtension on CameraStatus {
         return 'Ready to Capture';
       case CameraStatus.error:
         return 'Camera Error';
+      case CameraStatus.permissionDenied:
+        return 'Camera Permission Denied';
     }
   }
 
   bool get isReady => this == CameraStatus.ready;
   bool get hasError => this == CameraStatus.error;
+  bool get isPermissionDenied => this == CameraStatus.permissionDenied;
 }

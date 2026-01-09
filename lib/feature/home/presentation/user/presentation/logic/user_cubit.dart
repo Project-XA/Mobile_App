@@ -130,7 +130,7 @@ class UserCubit extends Cubit<UserState> {
     emit(
       currentState.copyWith(
         isSearching: false,
-        clearActiveSession: !hasSessions, 
+        clearActiveSession: !hasSessions,
       ),
     );
   }
@@ -147,8 +147,7 @@ class UserCubit extends Cubit<UserState> {
     if (!exists) {
       final updatedSessions = [...existingSessions, session];
 
-      final activeSession =
-          currentState.activeSession ?? session; 
+      final activeSession = currentState.activeSession ?? session;
 
       emit(
         currentState.copyWith(
@@ -252,16 +251,10 @@ class UserCubit extends Cubit<UserState> {
         );
 
         await Future.delayed(const Duration(seconds: 2));
-        emit(
-          SessionDiscoveryActive(
-            user: currentState.user,
-            activeSession: session,
-            discoveredSessions: currentState is SessionDiscoveryActive
-                ? currentState.discoveredSessions
-                : [session],
-            stats: updatedStats,
-          ),
-        );
+
+        await stopSessionDiscovery();
+
+        emit(UserIdle(user: currentState.user, stats: updatedStats));
       } else {
         emit(
           CheckInState(
@@ -274,8 +267,17 @@ class UserCubit extends Cubit<UserState> {
         );
 
         await Future.delayed(const Duration(seconds: 2));
+
+        // Return to previous state
         if (currentState is SessionDiscoveryActive) {
           emit(currentState);
+        } else {
+          emit(
+            UserIdle(
+              user: currentState.user,
+              stats: _getStatsFromState(currentState),
+            ),
+          );
         }
       }
     } catch (e) {
@@ -290,8 +292,17 @@ class UserCubit extends Cubit<UserState> {
       emit(failedState);
 
       await Future.delayed(const Duration(seconds: 2));
+
+      // Return to previous state
       if (currentState is SessionDiscoveryActive) {
         emit(currentState);
+      } else {
+        emit(
+          UserIdle(
+            user: currentState.user,
+            stats: _getStatsFromState(currentState),
+          ),
+        );
       }
     }
   }

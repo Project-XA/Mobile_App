@@ -6,6 +6,7 @@ import 'package:mobile_app/feature/scan_OCR/domain/usecases/save_scanned_card_us
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/validate_card_use_case.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/logic/camera_state.dart';
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/captured_photo.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CameraCubit extends Cubit<CameraState> {
   final CameraRepository _repository;
@@ -28,9 +29,31 @@ class CameraCubit extends Cubit<CameraState> {
 
   Future<void> openCamera() async {
     if (state.isOpened) return;
-    emit(state.copyWith(isInitializing: true, hasError: false));
+
+    emit(state.copyWith(isInitializing: true, hasError: false, hasPermissionDenied: false));
 
     try {
+      // التحقق من الـ permission
+      final status = await Permission.camera.status;
+      
+      if (status.isDenied || status.isPermanentlyDenied) {
+        // طلب الـ permission
+        final result = await Permission.camera.request();
+        
+        if (result.isDenied || result.isPermanentlyDenied) {
+          // الـ permission مرفوض
+          emit(
+            state.copyWith(
+              isInitializing: false,
+              isOpened: false,
+              hasError: false,
+              hasPermissionDenied: true,
+            ),
+          );
+          return;
+        }
+      }
+
       await _repository.openCamera();
       emit(
         state.copyWith(
@@ -38,11 +61,17 @@ class CameraCubit extends Cubit<CameraState> {
           isInitializing: false,
           controller: _repository.controller,
           hasError: false,
+          hasPermissionDenied: false,
         ),
       );
     } catch (e) {
       emit(
-        state.copyWith(isInitializing: false, isOpened: false, hasError: true),
+        state.copyWith(
+          isInitializing: false,
+          isOpened: false,
+          hasError: true,
+          hasPermissionDenied: false,
+        ),
       );
       rethrow;
     }
@@ -56,12 +85,13 @@ class CameraCubit extends Cubit<CameraState> {
 
   Future<void> capturePhoto() async {
     if (!state.canCapture) return;
+
     emit(state.copyWith(isProcessing: true, hasError: false));
 
     try {
       final photo = await _captureUseCase.execute();
-
       await _repository.closeCamera();
+
       emit(
         state.copyWith(
           isOpened: false,

@@ -46,7 +46,7 @@ class StartPage extends StatelessWidget {
 
                   /// TITLE
                   Text(
-                    "Welcome to CheckIn",
+                    "Welcome to Attendo",
                     style: TextStyle(
                       color: AppColors.mainTextColorBlack,
                       fontSize: textFont.sp,
@@ -103,7 +103,7 @@ class StartPage extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      context.pushNamed(Routes.registeScreen);
+                      context.pushNamed(Routes.scanIdScreen);
                     },
                   ),
                 ],

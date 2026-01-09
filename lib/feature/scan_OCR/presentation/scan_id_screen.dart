@@ -1,9 +1,11 @@
 // ignore_for_file: deprecated_member_use
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/DI/get_it.dart';
 import 'package:mobile_app/core/DI/scan_ocr_di.dart';
+import 'package:mobile_app/core/routing/routes.dart';
 import 'package:mobile_app/core/services/extensions.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
@@ -12,21 +14,53 @@ import 'package:mobile_app/feature/scan_OCR/presentation/widgets/camera_box.dart
 import 'package:mobile_app/feature/scan_OCR/presentation/widgets/id_data_widget.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/widgets/scan_header.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/widgets/action_buttons.dart';
+import 'package:mobile_app/feature/scan_OCR/presentation/widgets/permission_denied_widget.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/logic/camera_cubit.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/logic/camera_state.dart';
 
-class ScanIdScreen extends StatelessWidget {
+class ScanIdScreen extends StatefulWidget {
   const ScanIdScreen({super.key});
+
+  @override
+  State<ScanIdScreen> createState() => _ScanIdScreenState();
+}
+
+class _ScanIdScreenState extends State<ScanIdScreen> {
+  Timer? _redirectTimer;
+
+  @override
+  void dispose() {
+    _redirectTimer?.cancel();
+    super.dispose();
+  }
+
+  void _handlePermissionDenied(BuildContext context) {
+    _redirectTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted) {
+        context.pushReplacmentNamed(Routes.startPage);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     setupScanOcrFeature();
+
     return BlocProvider(
       create: (context) => getIt<CameraCubit>()..openCamera(),
       child: Scaffold(
         appBar: _buildAppBar(context),
-        body: BlocBuilder<CameraCubit, CameraState>(
+        body: BlocConsumer<CameraCubit, CameraState>(
+          listener: (context, state) {
+            if (state.hasPermissionDenied) {
+              _handlePermissionDenied(context);
+            }
+          },
           builder: (context, state) {
+            if (state.hasPermissionDenied) {
+              return const Center(child: PermissionDeniedWidget());
+            }
+
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
               child: Column(
@@ -41,23 +75,13 @@ class ScanIdScreen extends StatelessWidget {
                   ],
 
                   if (state.showResult && state.finalData != null) ...[
-                    // Expanded(
-                    //   child: SingleChildScrollView(
-                    //     child: CroppedFieldsViewer(
-                    //       croppedFields: state.croppedFields ?? [],
-                    //       extractedText: state.extractedText,
-                    //     ),
-                    //   ),
-                    // ),
                     IdDataWidget(
                       firstName: state.finalData!['firstName'] ?? 'N/A',
                       lastName: state.finalData!['lastName'] ?? 'N/A',
-                      //  idNumber: state.finalData!['nid'] ?? 'N/A',
                     ),
                     verticalSpace(20),
                   ],
 
-                  // Spacer
                   const Spacer(),
 
                   ActionButtons(state: state),
@@ -73,6 +97,7 @@ class ScanIdScreen extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
+      backgroundColor: AppColors.backGroundColorWhite,
       leading: IconButton(
         onPressed: () => context.pop(),
         icon: const Icon(
