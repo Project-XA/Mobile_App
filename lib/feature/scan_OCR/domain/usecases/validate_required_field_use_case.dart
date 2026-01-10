@@ -26,11 +26,8 @@ class ValidateRequiredFieldsUseCase {
     'invalid_watermark_tut',
   ];
 
-  /// التحقق من وجود جميع الـ fields المطلوبة
-  /// Returns true إذا كانت كل الـ fields موجودة وصحيحة
   Future<ValidationResult> execute(List<DetectionModel> detections) async {
     try {
-      // التحقق من وجود detections
       if (detections.isEmpty) {
         return ValidationResult(
           isValid: false,
@@ -39,7 +36,6 @@ class ValidateRequiredFieldsUseCase {
         );
       }
 
-      // التحقق من عدم وجود invalid labels
       final invalidDetections = detections
           .where((d) => _invalidLabels.contains(d.className))
           .toList();
@@ -72,7 +68,6 @@ class ValidateRequiredFieldsUseCase {
         );
       }
 
-      // التحقق من الـ confidence للـ required labels
       final lowConfidenceFields = <String>[];
       
       for (final requiredLabel in _requiredLabels) {
@@ -116,7 +111,6 @@ class ValidateRequiredFieldsUseCase {
   }
 }
 
-/// نتيجة التحقق من الـ fields
 class ValidationResult {
   final bool isValid;
   final List<String>? missingFields;

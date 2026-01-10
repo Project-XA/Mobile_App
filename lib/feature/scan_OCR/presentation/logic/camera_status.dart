@@ -3,7 +3,7 @@ enum CameraStatus {
   initializing, 
   ready, 
   error,
-  permissionDenied // جديد
+  permissionDenied 
 }
 
 extension CameraStatusExtension on CameraStatus {

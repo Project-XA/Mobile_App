@@ -84,7 +84,6 @@ class CameraRepImp implements CameraRepository {
     return CapturedPhoto(path: file.path);
   }
 
-  // ========== Detection Operations ==========
   @override
   Future<bool> isCard(CapturedPhoto photo) async {
     await _ensureModelLoaded(_cardModel);

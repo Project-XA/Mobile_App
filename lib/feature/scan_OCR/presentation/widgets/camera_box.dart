@@ -8,6 +8,7 @@ import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/logic/camera_cubit.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/logic/camera_state.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/widgets/id_crad_frame_painter.dart';
+import 'package:mobile_app/feature/scan_OCR/presentation/widgets/invalid_card_message_widget.dart';
 
 class CameraBox extends StatelessWidget {
   const CameraBox({super.key});
@@ -37,6 +38,12 @@ class CameraBox extends StatelessWidget {
   }
 
   Widget _buildContent(CameraState state) {
+    if (state.showInvalidCardMessage) {
+      return InvalidCardMessageWidget(
+        message: state.errorMessage ?? 'Please use a valid ID card',
+      );
+    }
+
     if (state.isProcessing) {
       return _buildProcessingPlaceholder();
     }
@@ -62,7 +69,6 @@ class CameraBox extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Animated processing icon
           TweenAnimationBuilder<double>(
             tween: Tween(begin: 0.0, end: 1.0),
             duration: const Duration(seconds: 2),
@@ -77,9 +83,7 @@ class CameraBox extends StatelessWidget {
                 ),
               );
             },
-            onEnd: () {
-              // Loop animation
-            },
+            onEnd: () {},
           ),
           SizedBox(height: 16.h),
           const CircularProgressIndicator(
@@ -113,7 +117,6 @@ class CameraBox extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         CameraPreview(controller),
-        // ID Card frame overlay
         CustomPaint(
           painter: IdCardFramePainter(),
         ),
@@ -198,6 +201,7 @@ class CameraBox extends StatelessWidget {
   }
 
   Color _getBorderColor(CameraState state) {
+    if (state.showInvalidCardMessage) return Colors.red;
     if (state.showResult) return Colors.green;
     if (state.hasError) return Colors.red;
     if (state.isProcessing) return Colors.orange;

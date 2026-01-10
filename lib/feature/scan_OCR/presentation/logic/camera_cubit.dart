@@ -33,18 +33,20 @@ class CameraCubit extends Cubit<CameraState> {
   Future<void> openCamera() async {
     if (state.isOpened) return;
 
-    emit(state.copyWith(isInitializing: true, hasError: false, hasPermissionDenied: false));
+    emit(state.copyWith(
+      isInitializing: true, 
+      hasError: false, 
+      hasPermissionDenied: false,
+      showInvalidCardMessage: false, // إخفاء رسالة البطاقة غير الصالحة
+    ));
 
     try {
-      // التحقق من الـ permission
       final status = await Permission.camera.status;
       
       if (status.isDenied || status.isPermanentlyDenied) {
-        // طلب الـ permission
         final result = await Permission.camera.request();
         
         if (result.isDenied || result.isPermanentlyDenied) {
-          // الـ permission مرفوض
           emit(
             state.copyWith(
               isInitializing: false,
@@ -65,6 +67,7 @@ class CameraCubit extends Cubit<CameraState> {
           controller: _repository.controller,
           hasError: false,
           hasPermissionDenied: false,
+          showInvalidCardMessage: false,
         ),
       );
     } catch (e) {
@@ -89,10 +92,13 @@ class CameraCubit extends Cubit<CameraState> {
   Future<void> capturePhoto() async {
     if (!state.canCapture) return;
 
-    emit(state.copyWith(isProcessing: true, hasError: false));
+    emit(state.copyWith(
+      isProcessing: true, 
+      hasError: false,
+      showInvalidCardMessage: false,
+    ));
 
     try {
-      // 1️⃣ التقاط الصورة
       final photo = await _captureUseCase.execute();
       await _repository.closeCamera();
 
@@ -106,52 +112,78 @@ class CameraCubit extends Cubit<CameraState> {
         ),
       );
 
-      // 2️⃣ التحقق من أنها بطاقة
       final isCard = await _validateUseCase.execute(photo);
 
       if (!isCard) {
         print('❌ Not a valid ID card');
+        
+        // عرض رسالة البطاقة غير الصالحة
         emit(
           state.copyWith(
             isProcessing: false,
             showResult: false,
             hasError: false,
+            hasCaptured: false,
+            showInvalidCardMessage: true,
+            errorMessage: 'Please use a valid ID card',
           ),
         );
+
+        // الانتظار 2 ثانية ثم إعادة فتح الكاميرا
+        await Future.delayed(const Duration(seconds: 2));
+        
+        // إعادة فتح الكاميرا تلقائياً
+        emit(
+          state.copyWith(
+            showInvalidCardMessage: false,
+            errorMessage: null,
+          ),
+        );
+        
+        await openCamera();
         return;
       }
 
       print('✅ Valid ID card detected');
 
-      // 3️⃣ كشف الـ fields
       final detections = await _repository.detectFields(photo);
       
       print('📋 Total detections: ${detections.length}');
       print('📋 Detected labels: ${detections.map((d) => d.className).toSet()}');
 
-      // 4️⃣ التحقق من وجود الـ required fields
       final validationResult = await _validateFieldsUseCase.execute(detections);
 
       if (!validationResult.isValid) {
         print('❌ Required fields validation failed: ${validationResult.reason}');
         
-        // إذا الـ fields المطلوبة مش موجودة، نعمل retake تلقائي
         emit(
           state.copyWith(
             isProcessing: false,
             showResult: false,
             hasError: false,
+            hasCaptured: false,
+            showInvalidCardMessage: true,
+            errorMessage: 'Required fields missing. Please try again',
           ),
         );
+
+        await Future.delayed(const Duration(seconds: 2));
+        
+        emit(
+          state.copyWith(
+            showInvalidCardMessage: false,
+            errorMessage: null,
+          ),
+        );
+        
+        await openCamera();
         return;
       }
 
       print('✅ All required fields validated successfully');
 
-      // 5️⃣ معالجة البطاقة واستخراج البيانات
       final result = await _processUseCase.execute(photo);
 
-      // 6️⃣ التحقق من أن البيانات المهمة موجودة في النتيجة النهائية
       final hasFirstName = result.finalData['firstName'] != null && 
                            result.finalData['firstName']!.isNotEmpty;
       final hasLastName = result.finalData['lastName'] != null && 
@@ -166,12 +198,25 @@ class CameraCubit extends Cubit<CameraState> {
             isProcessing: false,
             showResult: false,
             hasError: false,
+            hasCaptured: false,
+            showInvalidCardMessage: true,
+            errorMessage: 'Could not extract name. Please try again',
           ),
         );
+
+        await Future.delayed(const Duration(seconds: 2));
+        
+        emit(
+          state.copyWith(
+            showInvalidCardMessage: false,
+            errorMessage: null,
+          ),
+        );
+        
+        await openCamera();
         return;
       }
 
-      // 7️⃣ كل شيء تمام، نعرض النتائج
       print('✅ Processing completed successfully');
       print('📋 Final data: ${result.finalData}');
 
@@ -192,8 +237,22 @@ class CameraCubit extends Cubit<CameraState> {
           showResult: false,
           hasCaptured: false,
           hasError: true,
+          showInvalidCardMessage: true,
+          errorMessage: 'An error occurred. Please try again',
         ),
       );
+
+      await Future.delayed(const Duration(seconds: 2));
+      
+      emit(
+        state.copyWith(
+          showInvalidCardMessage: false,
+          errorMessage: null,
+          hasError: false,
+        ),
+      );
+      
+      await openCamera();
     }
   }
 
@@ -221,6 +280,7 @@ class CameraCubit extends Cubit<CameraState> {
         extractedText: null,
         finalData: null,
         hasError: false,
+        showInvalidCardMessage: false,
       ),
     );
 
