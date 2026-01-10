@@ -5,6 +5,7 @@ import 'package:mobile_app/feature/scan_OCR/domain/usecases/captured_photo.dart'
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/process_card_use_case.dart';
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/save_scanned_card_use_case.dart';
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/validate_card_use_case.dart';
+import 'package:mobile_app/feature/scan_OCR/domain/usecases/validate_required_field_use_case.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/logic/camera_cubit.dart';
 
 
@@ -24,6 +25,9 @@ void setupScanOcrFeature() {
     () => ValidateCardUseCase(getIt()),
   );
 
+  if (!getIt.isRegistered<ValidateRequiredFieldsUseCase>()) {
+    getIt.registerLazySingleton(() => ValidateRequiredFieldsUseCase());
+  }
   getIt.registerLazySingleton(
     () => ProcessCardUseCase(getIt()),
   );
@@ -32,8 +36,10 @@ void setupScanOcrFeature() {
     () => SaveScannedCardUseCase(getIt()),
   );
 
+
   getIt.registerFactory(
     () => CameraCubit(
+      getIt(),
       getIt(),
       getIt(),
       getIt(),

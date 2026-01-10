@@ -16,7 +16,6 @@ class UserAttendanceView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AdminCubit, AdminState>(
       builder: (context, state) {
-        // If there's an active session, show its attendance
         if (state is SessionState && state.isActive) {
           return _buildAttendanceList(
             context,

@@ -66,7 +66,6 @@ class PermissionDeniedWidget extends StatelessWidget {
           
           verticalSpace(24.h),
           
-          // خطوات للسماح بالـ permission
           Container(
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(

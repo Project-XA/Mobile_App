@@ -4,6 +4,7 @@ import 'package:mobile_app/feature/scan_OCR/domain/repo/camera_repo.dart';
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/process_card_use_case.dart';
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/save_scanned_card_use_case.dart';
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/validate_card_use_case.dart';
+import 'package:mobile_app/feature/scan_OCR/domain/usecases/validate_required_field_use_case.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/logic/camera_state.dart';
 import 'package:mobile_app/feature/scan_OCR/domain/usecases/captured_photo.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,6 +13,7 @@ class CameraCubit extends Cubit<CameraState> {
   final CameraRepository _repository;
   final CapturePhotoUseCase _captureUseCase;
   final ValidateCardUseCase _validateUseCase;
+  final ValidateRequiredFieldsUseCase _validateFieldsUseCase;
   final ProcessCardUseCase _processUseCase;
   final SaveScannedCardUseCase _saveCardUseCase;
 
@@ -19,6 +21,7 @@ class CameraCubit extends Cubit<CameraState> {
     this._repository,
     this._captureUseCase,
     this._validateUseCase,
+    this._validateFieldsUseCase,
     this._processUseCase,
     this._saveCardUseCase,
   ) : super(const CameraState());
@@ -89,6 +92,7 @@ class CameraCubit extends Cubit<CameraState> {
     emit(state.copyWith(isProcessing: true, hasError: false));
 
     try {
+      // 1️⃣ التقاط الصورة
       final photo = await _captureUseCase.execute();
       await _repository.closeCamera();
 
@@ -102,9 +106,11 @@ class CameraCubit extends Cubit<CameraState> {
         ),
       );
 
-      final isValid = await _validateUseCase.execute(photo);
+      // 2️⃣ التحقق من أنها بطاقة
+      final isCard = await _validateUseCase.execute(photo);
 
-      if (!isValid) {
+      if (!isCard) {
+        print('❌ Not a valid ID card');
         emit(
           state.copyWith(
             isProcessing: false,
@@ -115,7 +121,59 @@ class CameraCubit extends Cubit<CameraState> {
         return;
       }
 
+      print('✅ Valid ID card detected');
+
+      // 3️⃣ كشف الـ fields
+      final detections = await _repository.detectFields(photo);
+      
+      print('📋 Total detections: ${detections.length}');
+      print('📋 Detected labels: ${detections.map((d) => d.className).toSet()}');
+
+      // 4️⃣ التحقق من وجود الـ required fields
+      final validationResult = await _validateFieldsUseCase.execute(detections);
+
+      if (!validationResult.isValid) {
+        print('❌ Required fields validation failed: ${validationResult.reason}');
+        
+        // إذا الـ fields المطلوبة مش موجودة، نعمل retake تلقائي
+        emit(
+          state.copyWith(
+            isProcessing: false,
+            showResult: false,
+            hasError: false,
+          ),
+        );
+        return;
+      }
+
+      print('✅ All required fields validated successfully');
+
+      // 5️⃣ معالجة البطاقة واستخراج البيانات
       final result = await _processUseCase.execute(photo);
+
+      // 6️⃣ التحقق من أن البيانات المهمة موجودة في النتيجة النهائية
+      final hasFirstName = result.finalData['firstName'] != null && 
+                           result.finalData['firstName']!.isNotEmpty;
+      final hasLastName = result.finalData['lastName'] != null && 
+                          result.finalData['lastName']!.isNotEmpty;
+
+      if (!hasFirstName || !hasLastName) {
+        print('❌ Missing firstName or lastName in final data');
+        print('📋 Final data: ${result.finalData}');
+        
+        emit(
+          state.copyWith(
+            isProcessing: false,
+            showResult: false,
+            hasError: false,
+          ),
+        );
+        return;
+      }
+
+      // 7️⃣ كل شيء تمام، نعرض النتائج
+      print('✅ Processing completed successfully');
+      print('📋 Final data: ${result.finalData}');
 
       emit(
         state.copyWith(
@@ -127,6 +185,7 @@ class CameraCubit extends Cubit<CameraState> {
         ),
       );
     } catch (e) {
+      print('❌ Error during capture/processing: $e');
       emit(
         state.copyWith(
           isProcessing: false,

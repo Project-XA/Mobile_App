@@ -49,6 +49,7 @@ class _ScanIdScreenState extends State<ScanIdScreen> {
     return BlocProvider(
       create: (context) => getIt<CameraCubit>()..openCamera(),
       child: Scaffold(
+        backgroundColor: AppColors.backGroundColorWhite,
         appBar: _buildAppBar(context),
         body: BlocConsumer<CameraCubit, CameraState>(
           listener: (context, state) {
@@ -98,13 +99,7 @@ class _ScanIdScreenState extends State<ScanIdScreen> {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: AppColors.backGroundColorWhite,
-      leading: IconButton(
-        onPressed: () => context.pop(),
-        icon: const Icon(
-          Icons.arrow_back_ios_new,
-          color: AppColors.mainTextColorBlack,
-        ),
-      ),
+      automaticallyImplyLeading: false,
       centerTitle: true,
       title: Text(
         'ID Verification',
