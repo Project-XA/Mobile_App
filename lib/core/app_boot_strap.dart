@@ -30,7 +30,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
     
     final onboardingService = getIt<OnboardingService>();
     
-    // Check if user is logged in
+    final hasCompletedOCR = await onboardingService.hasCompletedOCR();
     final isLoggedIn = await onboardingService.isLoggedIn();
     final hasCompleted = await onboardingService.hasCompletedOnboarding();
     
@@ -38,10 +38,15 @@ class _AppBootstrapState extends State<AppBootstrap> {
     String? routeArgument;
 
     if (hasCompleted && isLoggedIn) {
+      // User is registered and logged in → Go to main navigation
       final userRole = await onboardingService.getUserRole();
       initialRoute = Routes.mainNavigation;
       routeArgument = userRole ?? 'User';
+    } else if (hasCompletedOCR) {
+      // User completed OCR but not registered → Go to register screen
+      initialRoute = Routes.registeScreen;
     } else {
+      // Fresh start → Go to start page
       initialRoute = Routes.startPage;
     }
 

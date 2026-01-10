@@ -1,44 +1,37 @@
 import 'package:mobile_app/core/networking/dio_factory.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mobile_app/core/services/auth_state_service.dart';
 
 class OnboardingService {
-  final SharedPreferences _prefs;
+  final AuthStateService _authStateService;
   
-  static const String _keyHasCompletedOnboarding = 'has_completed_onboarding';
-  static const String _keyUserRole = 'user_role';
-  static const String _keyIsLoggedIn = 'is_logged_in';
-
-  OnboardingService(this._prefs);
+  OnboardingService(this._authStateService);
 
   Future<bool> hasCompletedOnboarding() async {
-    return _prefs.getBool(_keyHasCompletedOnboarding) ?? false;
+    return await _authStateService.hasRegistered();
   }
 
-  /// Check if user is currently logged in
+  Future<bool> hasCompletedOCR() async {
+    return await _authStateService.hasCompletedOCR();
+  }
+
   Future<bool> isLoggedIn() async {
-    return _prefs.getBool(_keyIsLoggedIn) ?? false;
+    return await _authStateService.isLoggedIn();
   }
 
-  /// [userRole] should be 'Admin' or 'User'
   Future<void> markOnboardingComplete(String userRole) async {
-    await _prefs.setBool(_keyHasCompletedOnboarding, true);
-    await _prefs.setString(_keyUserRole, userRole);
-    await _prefs.setBool(_keyIsLoggedIn, true);
+    await _authStateService.markRegistrationComplete(userRole);
   }
 
   Future<String?> getUserRole() async {
-    return _prefs.getString(_keyUserRole);
+    return await _authStateService.getUserRole();
   }
 
   Future<void> clearOnboardingState() async {
-    await _prefs.remove(_keyHasCompletedOnboarding);
-    await _prefs.remove(_keyUserRole);
-    await _prefs.remove(_keyIsLoggedIn);
+    await _authStateService.clearAll();
   }
 
   Future<void> logout() async {
     await DioFactory.clearTokens();
-    
-    await _prefs.remove(_keyIsLoggedIn);
+    await _authStateService.clearAuthState();
   }
 }

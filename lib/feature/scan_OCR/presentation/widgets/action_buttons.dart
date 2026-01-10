@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mobile_app/core/DI/get_it.dart';
 import 'package:mobile_app/core/routing/routes.dart';
+import 'package:mobile_app/core/services/auth_state_service.dart';
 import 'package:mobile_app/core/services/extensions.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
@@ -79,6 +81,9 @@ class ActionButtons extends StatelessWidget {
                 await context.read<CameraCubit>().verifyAndSaveData();
                 
                 if (context.mounted) {
+                  final authStateService = getIt<AuthStateService>();
+                  await authStateService.markOCRComplete();
+                  
                   context.pushNamed(Routes.registeScreen);
                 }
               } catch (e) {

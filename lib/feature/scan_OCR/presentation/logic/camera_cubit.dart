@@ -37,7 +37,7 @@ class CameraCubit extends Cubit<CameraState> {
       isInitializing: true, 
       hasError: false, 
       hasPermissionDenied: false,
-      showInvalidCardMessage: false, // إخفاء رسالة البطاقة غير الصالحة
+      showInvalidCardMessage: false,
     ));
 
     try {
@@ -117,7 +117,6 @@ class CameraCubit extends Cubit<CameraState> {
       if (!isCard) {
         print('❌ Not a valid ID card');
         
-        // عرض رسالة البطاقة غير الصالحة
         emit(
           state.copyWith(
             isProcessing: false,
