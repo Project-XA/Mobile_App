@@ -2,6 +2,10 @@
 class Assets {
   Assets._();
   
+  /// Assets for assetsImagesAttendoLogo
+  /// assets/images/Attendo_logo.png
+  static const String assetsImagesAttendoLogo = "assets/images/Attendo_logo.png";
+
   /// Assets for assetsImagesCheckMark
   /// assets/images/check-mark.png
   static const String assetsImagesCheckMark = "assets/images/check-mark.png";

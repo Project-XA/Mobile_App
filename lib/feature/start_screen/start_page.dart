@@ -40,7 +40,7 @@ class StartPage extends StatelessWidget {
                   verticalSpace(size.height * 0.05),
 
                   /// CHECKMARK LOGO
-                  Image.asset(Assets.assetsImagesCheckMark, width: logoSize),
+                  Image.asset(Assets.assetsImagesAttendoLogo, width: logoSize),
 
                   verticalSpace(15),
 
