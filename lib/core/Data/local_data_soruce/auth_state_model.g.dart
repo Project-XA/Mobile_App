@@ -8,7 +8,7 @@ part of 'auth_state_model.dart';
 
 class AuthStateModelAdapter extends TypeAdapter<AuthStateModel> {
   @override
-  final int typeId = 1;
+  final int typeId = 3;
 
   @override
   AuthStateModel read(BinaryReader reader) {

@@ -128,10 +128,8 @@ class CameraCubit extends Cubit<CameraState> {
           ),
         );
 
-        // الانتظار 2 ثانية ثم إعادة فتح الكاميرا
         await Future.delayed(const Duration(seconds: 2));
         
-        // إعادة فتح الكاميرا تلقائياً
         emit(
           state.copyWith(
             showInvalidCardMessage: false,

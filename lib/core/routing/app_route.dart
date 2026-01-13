@@ -48,7 +48,7 @@ class AppRoute {
     }
 
     return PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 280),
+      transitionDuration: const Duration(milliseconds: 250),
       pageBuilder: (_, __, ___) => page,
       transitionsBuilder: (_, animation, __, child) {
         return SlideTransition(
