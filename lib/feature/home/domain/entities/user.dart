@@ -30,6 +30,32 @@ class User {
     this.organizations,
     this.profileImage,
   });
+
+  User copyWith({
+    String? nationalId,
+    String? firstNameAr,
+    String? lastNameAr,
+    String? address,
+    String? birthDate,
+    String? email,
+    String? firstNameEn,
+    String? lastNameEn,
+    List<UserOrg>? organizations,
+    String? profileImage,
+  }) {
+    return User(
+      nationalId: nationalId ?? this.nationalId,
+      firstNameAr: firstNameAr ?? this.firstNameAr,
+      lastNameAr: lastNameAr ?? this.lastNameAr,
+      address: address ?? this.address,
+      birthDate: birthDate ?? this.birthDate,
+      email: email ?? this.email,
+      firstNameEn: firstNameEn ?? this.firstNameEn,
+      lastNameEn: lastNameEn ?? this.lastNameEn,
+      organizations: organizations ?? this.organizations,
+      profileImage: profileImage ?? this.profileImage,
+    );
+  }
   
   // Getters
   String get fullNameAr => '$firstNameAr $lastNameAr';

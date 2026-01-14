@@ -10,16 +10,14 @@ class UserHeader extends StatelessWidget {
   final String userName;
   final String userRole;
   final String? userImage;
-  final int notificationCount;
-  final VoidCallback? onNotificationTap;
+ 
 
   const UserHeader({
     super.key,
     required this.userName,
     required this.userRole,
     this.userImage,
-    this.notificationCount = 0,
-    this.onNotificationTap,
+   
   });
 
   @override
@@ -52,11 +50,7 @@ class UserHeader extends StatelessWidget {
 
               horizontalSpace(8.w),
 
-              _NotificationBadge(
-                count: notificationCount,
-                onTap: onNotificationTap,
-                isSmallScreen: isSmallScreen,
-              ),
+           
             ],
           ),
         );

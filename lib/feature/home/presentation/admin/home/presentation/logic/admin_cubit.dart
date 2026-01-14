@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app/feature/home/domain/entities/user.dart';
-import 'package:mobile_app/feature/home/domain/entities/user_org.dart';
 import 'package:mobile_app/feature/home/presentation/admin/home/data/models/server_info.dart';
 import 'package:mobile_app/feature/home/presentation/admin/home/domain/entities/attendency_record.dart';
 import 'package:mobile_app/feature/home/presentation/admin/home/domain/entities/session.dart';
@@ -21,7 +20,7 @@ class AdminCubit extends Cubit<AdminState> {
   final ListenAttendanceUseCase listenAttendanceUseCase;
 
   StreamSubscription<AttendanceRecord>? _attendanceSubscription;
-
+  
   AdminCubit({
     required this.getCurrentUserUseCase,
     required this.createSessionUseCase,

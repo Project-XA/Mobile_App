@@ -106,8 +106,6 @@ class _HomePageState extends State<HomePage> {
                       userName: user.fullNameEn,
                       userRole: user.organizations?.first.role ?? 'Student',
                       userImage: user.profileImage ?? Assets.assetsImagesUser,
-                      notificationCount: 3,
-                      onNotificationTap: () {},
                     ),
                     verticalSpace(20),
                     Padding(

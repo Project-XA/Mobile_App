@@ -55,8 +55,6 @@ class AdminHome extends StatelessWidget {
                     userName: user.fullNameEn,
                     userRole: user.organizations?.first.role ?? 'Admin',
                     userImage: user.profileImage ?? Assets.assetsImagesUser,
-                    notificationCount: 5,
-                    onNotificationTap: () {},
                   ),
 
                   verticalSpace(20),
@@ -114,8 +112,8 @@ class AdminHome extends StatelessWidget {
   }
 
   Widget _buildToggleTabs(AdminState state) {
-    final selectedIndex = state is AdminStateWithUser 
-        ? state.selectedTabIndex 
+    final selectedIndex = state is AdminStateWithUser
+        ? state.selectedTabIndex
         : 0;
 
     return BlocBuilder<AdminCubit, AdminState>(
@@ -137,18 +135,15 @@ class AdminHome extends StatelessWidget {
   }
 
   Widget _buildContent(AdminState state) {
-    final selectedIndex = state is AdminStateWithUser 
-        ? state.selectedTabIndex 
+    final selectedIndex = state is AdminStateWithUser
+        ? state.selectedTabIndex
         : 0;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: IndexedStack(
         index: selectedIndex,
-        children: const [
-          ManageSessionsView(),
-          UserAttendanceView(),
-        ],
+        children: const [ManageSessionsView(), UserAttendanceView()],
       ),
     );
   }

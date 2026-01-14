@@ -43,4 +43,5 @@ Future<void> initCore() async {
   getIt.registerLazySingleton<OnboardingService>(
     () => OnboardingService(getIt<AuthStateService>()),
   );
+
 }
