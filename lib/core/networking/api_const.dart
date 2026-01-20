@@ -1,6 +1,6 @@
 class ApiConst {
   static const String baseurl =
-      'https://project-x-backend.up.railway.app/api/user/';
+      'https://backend-production-9a44e.up.railway.app/api/user/';
   static const String register = 'get-user';
 
   static const String refreshToken = "null";

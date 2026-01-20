@@ -13,6 +13,9 @@ abstract class UserLocalDataSource {
   Future<String> saveImageLocally(File imageFile);
   Future<void> deleteOldProfileImage(String imagePath);
   Future<bool> hasCurrentUser();
+  Future<String> getIdCardImagePath();
+  Future<void> logout();
+  Future<bool> hasValidToken();
 }
 
 class UserLocalDataSourceImp extends UserLocalDataSource {
@@ -36,9 +39,36 @@ class UserLocalDataSourceImp extends UserLocalDataSource {
   }
 
   @override
+  Future<String> getIdCardImagePath() async {
+    try {
+      final user = await getCurrentUser();
+      final idCardImagePath = user.idCardImage;
+      if (idCardImagePath == null || idCardImagePath.isEmpty) {
+        throw CacheException('ID card image path not found');
+      }
+      return idCardImagePath;
+    } catch (e) {
+      if (e is CacheException) rethrow;
+      throw CacheException('Failed to get ID card image path: $e');
+    }
+  }
+
+  @override
   Future<bool> hasCurrentUser() async {
     try {
       return userBox.containsKey(_currentUserKey);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> hasValidToken() async {
+    try {
+      final user = userBox.get(_currentUserKey);
+      return user != null && 
+             user.loginToken != null && 
+             user.loginToken!.isNotEmpty;
     } catch (e) {
       return false;
     }
@@ -95,6 +125,7 @@ class UserLocalDataSourceImp extends UserLocalDataSource {
   Future<void> saveLocalUserData(UserModel user) async {
     try {
       await userBox.put(_currentUserKey, user);
+      await userBox.flush();
     } catch (e) {
       throw CacheException('Failed to save user data: $e');
     }
@@ -104,6 +135,7 @@ class UserLocalDataSourceImp extends UserLocalDataSource {
   Future<void> saveUserLogin(UserModel user) async {
     try {
       await userBox.put(_currentUserKey, user);
+      await userBox.flush();
     } catch (e) {
       throw CacheException('Failed to save login data: $e');
     }
@@ -113,7 +145,6 @@ class UserLocalDataSourceImp extends UserLocalDataSource {
   Future<void> updataUser(UserModel user) async {
     try {
       await userBox.put(_currentUserKey, user);
-      // Ensure data is persisted
       await userBox.flush();
     } catch (e) {
       throw CacheException('Failed to update user data: $e');
@@ -124,12 +155,11 @@ class UserLocalDataSourceImp extends UserLocalDataSource {
   Future<void> updateProfileImage(String imagePath) async {
     try {
       final user = await getCurrentUser();
-
       final oldImagePath = user.profileImage;
 
       user.profileImage = imagePath;
 
-      await user.save();
+      await userBox.put(_currentUserKey, user);
       await userBox.flush();
 
       if (oldImagePath != null && oldImagePath.isNotEmpty) {
@@ -137,6 +167,20 @@ class UserLocalDataSourceImp extends UserLocalDataSource {
       }
     } catch (e) {
       throw CacheException('Failed to update profile image: $e');
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    try {
+      final user = await getCurrentUser();
+      
+      user.loginToken = null;
+      
+      await userBox.put(_currentUserKey, user);
+      await userBox.flush();
+    } catch (e) {
+      throw CacheException('Failed to logout: $e');
     }
   }
 }

@@ -4,6 +4,22 @@ part 'register_response_body.g.dart';
 
 @JsonSerializable()
 class RegisterResponseBody {
+  final UserResponse userResponse;
+  final String loginToken;
+
+  RegisterResponseBody({
+    required this.userResponse,
+    required this.loginToken,
+  });
+
+  factory RegisterResponseBody.fromJson(Map<String, dynamic> json) =>
+      _$RegisterResponseBodyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RegisterResponseBodyToJson(this);
+}
+
+@JsonSerializable()
+class UserResponse {
   final String id;
   final String fullName;
   final String userName;
@@ -13,7 +29,7 @@ class RegisterResponseBody {
   final String createdAt;
   final String updatedAt;
 
-  RegisterResponseBody({
+  UserResponse({
     required this.id,
     required this.fullName,
     required this.userName,
@@ -24,8 +40,8 @@ class RegisterResponseBody {
     required this.updatedAt,
   });
 
-  factory RegisterResponseBody.fromJson(Map<String, dynamic> json) =>
-      _$RegisterResponseBodyFromJson(json);
+  factory UserResponse.fromJson(Map<String, dynamic> json) =>
+      _$UserResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$RegisterResponseBodyToJson(this);
+  Map<String, dynamic> toJson() => _$UserResponseToJson(this);
 }

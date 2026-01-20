@@ -8,12 +8,15 @@ import 'package:mobile_app/feature/register/presentation/logic/register_cubit.da
 void initRegister() {
   if (getIt.isRegistered<RegisterRepo>()) return;
 
-  getIt.registerLazySingleton<RegisterRepo>(
+
+
+getIt.registerLazySingleton<RegisterRepo>(
     () => RegisterRepoImp(
       userRemoteDataSource: getIt(),
       localDataSource: getIt(),
+      onboardingService: getIt(), 
     ),
-  );
+);
 
   getIt.registerLazySingleton(() => RegisterUseCase(getIt()));
 

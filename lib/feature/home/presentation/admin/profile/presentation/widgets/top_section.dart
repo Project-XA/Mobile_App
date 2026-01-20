@@ -1,10 +1,6 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive/hive.dart';
-import 'package:mobile_app/core/Data/local_data_soruce/user_local_data_source.dart';
 import 'package:mobile_app/core/DI/get_it.dart';
 import 'package:mobile_app/core/routing/routes.dart';
 import 'package:mobile_app/core/services/extensions.dart';
@@ -12,7 +8,6 @@ import 'package:mobile_app/core/services/onboarding_service.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
-import 'package:mobile_app/feature/home/data/models/user_model.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/logic/user_profile_cubit.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/logic/user_profile_state.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/widgets/profile_image_section.dart';
@@ -124,26 +119,29 @@ class TopSection extends StatelessWidget {
               // Close dialog first
               Navigator.pop(ctx);
 
-              // Perform logout
-              final onboardingService = getIt<OnboardingService>();
-              await onboardingService.logout();
-
-              // Clear registered user data from Hive (but keep OCR data)
               try {
-                final userLocalDataSource = getIt<UserLocalDataSource>();
-                final userBox = getIt<Box<UserModel>>();
-                await userBox.delete('current_user');
+                final onboardingService = getIt<OnboardingService>();
+                await onboardingService.logout();
+
+                if (!context.mounted) return;
+
+                context.pushNameAndRemoveUntil(
+                  Routes.registeScreen,
+                  predicate: (route) => false,
+                );
               } catch (e) {
-                debugPrint('Failed to clear user data: $e');
+                debugPrint('Logout error: $e');
+                
+                if (!context.mounted) return;
+                
+                // Show error message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Logout failed: $e'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
-
-              // Navigate to register screen and clear all previous routes
-              if (!context.mounted) return;
-
-              context.pushNameAndRemoveUntil(
-                Routes.registeScreen,
-                predicate: (route) => false,
-              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.mainTextColorBlack,

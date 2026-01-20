@@ -27,27 +27,32 @@ class _AppBootstrapState extends State<AppBootstrap> {
 
   Future<void> _init() async {
     await initCore();
-    
+
     final onboardingService = getIt<OnboardingService>();
     
+    // ⭐ Check states
     final hasCompletedOCR = await onboardingService.hasCompletedOCR();
+    final hasRegistered = await onboardingService.hasCompletedOnboarding();
     final isLoggedIn = await onboardingService.isLoggedIn();
-    final hasCompleted = await onboardingService.hasCompletedOnboarding();
-    
+
     String initialRoute;
     String? routeArgument;
 
-    if (hasCompleted && isLoggedIn) {
-      // User is registered and logged in → Go to main navigation
+    // ⭐ Decision tree based on token
+    if (!hasCompletedOCR) {
+      // Fresh user → Start page (OCR)
+      initialRoute = Routes.startPage;
+    } else if (!hasRegistered) {
+      // Has OCR data but not registered → Register screen
+      initialRoute = Routes.registeScreen;
+    } else if (!isLoggedIn) {
+      // Has registration but no token → Register screen (for quick login)
+      initialRoute = Routes.registeScreen;
+    } else {
+      // Has valid token → Main navigation
       final userRole = await onboardingService.getUserRole();
       initialRoute = Routes.mainNavigation;
       routeArgument = userRole ?? 'User';
-    } else if (hasCompletedOCR) {
-      // User completed OCR but not registered → Go to register screen
-      initialRoute = Routes.registeScreen;
-    } else {
-      // Fresh start → Go to start page
-      initialRoute = Routes.startPage;
     }
 
     setState(() {

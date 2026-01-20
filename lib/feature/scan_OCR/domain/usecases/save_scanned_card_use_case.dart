@@ -43,7 +43,7 @@ class SaveScannedCardUseCase {
         ['birth_date', 'dob', 'birthDate', 'date_of_birth', 'dateOfBirth'],
         defaultValue: '0102/21',
       ),
-      
+      idCardImage: ocrData['photo'],
       email: null,
       firstNameEn: null,
       lastNameEn: null,

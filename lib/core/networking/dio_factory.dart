@@ -5,7 +5,7 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class DioFactory {
   DioFactory._();
-  
+
   static Dio? _dio;
   static const _storage = FlutterSecureStorage();
 
@@ -16,7 +16,7 @@ class DioFactory {
           baseUrl: ApiConst.baseurl,
           connectTimeout: const Duration(seconds: 30),
           receiveTimeout: const Duration(seconds: 30),
-       
+
           validateStatus: (status) {
             return status != null && status >= 200 && status < 300;
           },
@@ -46,13 +46,13 @@ class DioFactory {
           if (error.response?.statusCode == 401) {
             try {
               final newToken = await _refreshToken();
-              
+
               if (newToken != null) {
                 await _saveToken(newToken);
-                
+
                 final opts = error.requestOptions;
                 opts.headers['Authorization'] = 'Bearer $newToken';
-                
+
                 final response = await _dio!.fetch(opts);
                 return handler.resolve(response);
               }
@@ -90,7 +90,7 @@ class DioFactory {
   static Future<String?> _refreshToken() async {
     try {
       final refreshToken = await _storage.read(key: 'refresh_token');
-      
+
       if (refreshToken == null) return null;
 
       final response = await _dio!.post(
@@ -101,16 +101,20 @@ class DioFactory {
       if (response.statusCode == 200) {
         final newToken = response.data['token'];
         final newRefreshToken = response.data['refresh_token'];
-        
+
         await _storage.write(key: 'auth_token', value: newToken);
         await _storage.write(key: 'refresh_token', value: newRefreshToken);
-        
+
         return newToken;
       }
     } catch (e) {
       await clearTokens();
     }
     return null;
+  }
+
+  static Future<void> setToken(String token) async {
+    await _storage.write(key: 'auth_token', value: token);
   }
 
   static Future<void> clearTokens() async {

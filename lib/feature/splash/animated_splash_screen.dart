@@ -59,7 +59,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final logoSize = size.width * 0.4;
+    final logoSize = size.width * 0.9;
 
     return Scaffold(
       backgroundColor: Colors.white,

@@ -11,6 +11,7 @@ import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/font_weight_helper.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/widgets/camera_box.dart';
+// import 'package:mobile_app/feature/scan_OCR/presentation/widgets/cropped_field.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/widgets/id_data_widget.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/widgets/scan_header.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/widgets/action_buttons.dart';
@@ -81,6 +82,12 @@ class _ScanIdScreenState extends State<ScanIdScreen> {
                       lastName: state.finalData!['lastName'] ?? 'N/A',
                     ),
                     verticalSpace(20),
+                    // Expanded(
+                    //   child: CroppedFieldsViewer(
+                    //     croppedFields: state.croppedFields!,
+                    //     extractedText: state.finalData,
+                    //   ),
+                    // ),
                   ],
 
                   const Spacer(),

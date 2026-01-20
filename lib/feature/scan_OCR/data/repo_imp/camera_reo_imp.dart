@@ -27,7 +27,7 @@ class CameraRepImp implements CameraRepository {
   final CameraPermissionService _permissionService;
 
   CameraRepImp({CameraPermissionService? permissionService})
-      : _permissionService = permissionService ?? CameraPermissionService() {
+    : _permissionService = permissionService ?? CameraPermissionService() {
     _cardModel = CardServiceModel();
     _fieldModel = FieldServiceModel();
     _idModel = IdServiceModel();
@@ -79,7 +79,7 @@ class CameraRepImp implements CameraRepository {
   @override
   Future<CapturedPhoto> capturePhoto() async {
     _ensureCameraInitialized();
-    await _stopCameraStream();
+    //  await _stopCameraStream();
     final file = await _controller!.takePicture();
     return CapturedPhoto(path: file.path);
   }

@@ -64,7 +64,7 @@ class OcrService {
       );
 
       if (text.trim().isEmpty) {
-        throw Exception('No text found in image');
+        return '';
       }
 
       if (preprocessImage && processedFile.path != imageFile.path) {
@@ -88,10 +88,10 @@ class OcrService {
 
       var processed = original;
 
-      processed = img.grayscale(processed); 
-      processed = img.adjustColor(processed, contrast: 1.5); 
-      processed = img.gaussianBlur(processed, radius: 1); 
-      processed = img.normalize(processed, min: 0, max: 255); 
+      processed = img.grayscale(processed);
+      processed = img.adjustColor(processed, contrast: 1.5);
+      processed = img.gaussianBlur(processed, radius: 1);
+      processed = img.normalize(processed, min: 0, max: 255);
 
       final dir = await getTemporaryDirectory();
       final processedPath =
@@ -111,7 +111,7 @@ class OcrService {
     String language = OcrConstants.arabicLanguage,
     bool preprocessImage = true,
   }) async {
-  const  Map<String, String> results = {};
+    const Map<String, String> results = {};
 
     for (var i = 0; i < images.length; i++) {
       try {

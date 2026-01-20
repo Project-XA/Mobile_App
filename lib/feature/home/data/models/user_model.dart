@@ -12,35 +12,40 @@ part 'user_model.g.dart';
 class UserModel extends HiveObject {
   @HiveField(0)
   String nationalId;
-  
+
   @HiveField(1)
   String firstNameAr;
-  
+
   @HiveField(2)
   String lastNameAr;
-  
+
   @HiveField(3)
   String? address;
-  
+
   @HiveField(4)
   String? birthDate;
-  
-  // ========== Remote Data ==========
+
   @HiveField(5)
   String? email;
-  
+
   @HiveField(6)
   String? firstNameEn;
-  
+
   @HiveField(7)
   String? lastNameEn;
-  
+
   @HiveField(8)
   List<UserOrgModel>? organizations;
-  
+
   @HiveField(9)
   String? profileImage;
-  
+
+  @HiveField(10)
+  String? idCardImage;
+
+  @HiveField(11)
+  String? loginToken;
+
   UserModel({
     required this.nationalId,
     required this.firstNameAr,
@@ -52,13 +57,15 @@ class UserModel extends HiveObject {
     this.lastNameEn,
     this.organizations,
     this.profileImage,
+    this.idCardImage,
+    this.loginToken,
   });
-  
+
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
-  
+
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
-  
+
   factory UserModel.fromEntity(User user) {
     return UserModel(
       nationalId: user.nationalId,
@@ -73,9 +80,11 @@ class UserModel extends HiveObject {
           ?.map((org) => UserOrgModel.fromEntity(org))
           .toList(),
       profileImage: user.profileImage,
+      idCardImage: user.idCardImage,
+      loginToken: user.loginToken,
     );
   }
-  
+
   User toEntity() {
     return User(
       nationalId: nationalId,
@@ -93,6 +102,26 @@ class UserModel extends HiveObject {
               ))
           .toList(),
       profileImage: profileImage,
+      idCardImage: idCardImage,
+      loginToken: loginToken,
+    );
+  }
+
+  // ⭐ Helper method to clear only auth data
+  UserModel copyWithClearedAuth() {
+    return UserModel(
+      nationalId: nationalId,
+      firstNameAr: firstNameAr,
+      lastNameAr: lastNameAr,
+      address: address,
+      birthDate: birthDate,
+      email: email,
+      firstNameEn: firstNameEn,
+      lastNameEn: lastNameEn,
+      organizations: organizations,
+      profileImage: profileImage,
+      idCardImage: idCardImage,
+      loginToken: null, // Clear token only
     );
   }
 }

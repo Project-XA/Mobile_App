@@ -1,5 +1,6 @@
-// core/routing/app_route.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/core/DI/get_it.dart';
 import 'package:mobile_app/core/routing/routes.dart';
 import 'package:mobile_app/feature/home/presentation/admin/home/presentation/admin_home.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/profile_screen.dart';
@@ -8,6 +9,8 @@ import 'package:mobile_app/feature/navigation_screen/presentation/main_navigatio
 import 'package:mobile_app/feature/register/presentation/register_screen.dart';
 import 'package:mobile_app/feature/scan_OCR/presentation/scan_id_screen.dart';
 import 'package:mobile_app/feature/start_screen/start_page.dart';
+import 'package:mobile_app/feature/verification/presentation/logic/verification_cubit.dart';
+import 'package:mobile_app/feature/verification/presentation/verification_screen.dart';
 
 class AppRoute {
   Route generateRoute(RouteSettings settings) {
@@ -41,6 +44,13 @@ class AppRoute {
 
       case Routes.profileScreen:
         page = const ProfileScreen();
+        break;
+
+      case Routes.verificationScreen:
+        page = BlocProvider(
+          create: (_) => getIt<VerificationCubit>(),
+          child: const VerificationScreen(),
+        );
         break;
 
       default:

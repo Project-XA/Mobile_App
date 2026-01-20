@@ -50,14 +50,14 @@ class ActionButtons extends StatelessWidget {
           SizedBox(
             width: 20.w,
             height: 20.h,
-            child:const CircularProgressIndicator(
+            child: const CircularProgressIndicator(
               strokeWidth: 2,
               valueColor: AlwaysStoppedAnimation<Color>(
                 AppColors.mainTextColorBlack,
               ),
             ),
           ),
-          horizontalSpace( 12.w),
+          horizontalSpace(12.w),
           Text(
             "Processing ID Card...",
             style: TextStyle(
@@ -79,11 +79,11 @@ class ActionButtons extends StatelessWidget {
             onPressed: () async {
               try {
                 await context.read<CameraCubit>().verifyAndSaveData();
-                
+
                 if (context.mounted) {
                   final authStateService = getIt<AuthStateService>();
                   await authStateService.markOCRComplete();
-                  
+
                   context.pushNamed(Routes.registeScreen);
                 }
               } catch (e) {
@@ -162,7 +162,7 @@ class ActionButtons extends StatelessWidget {
             ],
           ),
         ),
-        verticalSpace( 12.h),
+        verticalSpace(12.h),
         SizedBox(
           width: double.infinity,
           child: CustomAppButton(
