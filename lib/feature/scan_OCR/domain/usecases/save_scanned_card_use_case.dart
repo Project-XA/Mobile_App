@@ -1,6 +1,6 @@
 // feature/scan_OCR/domain/usecases/save_scanned_card_usecase.dart
 
-import 'package:mobile_app/core/Data/local_data_soruce/user_local_data_source.dart';
+import 'package:mobile_app/core/current_user/data/local_data_soruce/user_local_data_source.dart';
 import 'package:mobile_app/feature/home/data/models/user_model.dart';
 
 class SaveScannedCardUseCase {

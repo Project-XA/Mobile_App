@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/core/Data/local_data_soruce/user_local_data_source.dart';
+import 'package:mobile_app/core/current_user/data/local_data_soruce/user_local_data_source.dart';
 import 'package:mobile_app/feature/navigation_screen/presentation/logic/navigation_state.dart';
 
 class NavigationCubit extends Cubit<NavigationState> {

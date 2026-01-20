@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/DI/get_it.dart';
-import 'package:mobile_app/core/Data/local_data_soruce/user_local_data_source.dart';
+import 'package:mobile_app/core/current_user/data/local_data_soruce/user_local_data_source.dart';
 import 'package:mobile_app/core/routing/routes.dart';
 import 'package:mobile_app/core/services/auth_state_service.dart';
 import 'package:mobile_app/core/services/extensions.dart';

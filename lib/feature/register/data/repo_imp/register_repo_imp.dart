@@ -1,5 +1,5 @@
-import 'package:mobile_app/core/Data/local_data_soruce/user_local_data_source.dart';
-import 'package:mobile_app/core/Data/remote_data_source/user_remote_data_source.dart';
+import 'package:mobile_app/core/current_user/data/local_data_soruce/user_local_data_source.dart';
+import 'package:mobile_app/core/current_user/data/remote_data_source/user_remote_data_source.dart';
 import 'package:mobile_app/core/networking/api_result.dart';
 import 'package:mobile_app/core/networking/dio_factory.dart';
 import 'package:mobile_app/core/services/onboarding_service.dart';

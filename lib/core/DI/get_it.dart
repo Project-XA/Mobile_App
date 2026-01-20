@@ -2,8 +2,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:dio/dio.dart';
-import 'package:mobile_app/core/Data/local_data_soruce/user_local_data_source.dart';
-import 'package:mobile_app/core/Data/remote_data_source/user_remote_data_source.dart';
+import 'package:mobile_app/core/current_user/data/local_data_soruce/user_local_data_source.dart';
+import 'package:mobile_app/core/current_user/data/remote_data_source/user_remote_data_source.dart';
 import 'package:mobile_app/core/networking/dio_factory.dart';
 import 'package:mobile_app/core/networking/network_service.dart';
 import 'package:mobile_app/core/services/auth_state_service.dart';

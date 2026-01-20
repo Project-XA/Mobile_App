@@ -1,6 +1,6 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:mobile_app/core/DI/get_it.dart';
-import 'package:mobile_app/core/Data/local_data_soruce/user_local_data_source.dart';
+import 'package:mobile_app/core/current_user/data/local_data_soruce/user_local_data_source.dart';
 import 'package:mobile_app/feature/home/presentation/user/data/repos_imp/session_discovery_repo_impl.dart';
 import 'package:mobile_app/feature/home/presentation/user/data/repos_imp/user_attendence_repo_impl.dart';
 import 'package:mobile_app/feature/home/presentation/user/data/repos_imp/user_repo_impl.dart';
