@@ -141,12 +141,12 @@ class CameraRepImp implements CameraRepository {
     }
   }
 
-  Future<void> _stopCameraStream() async {
-    try {
-      await _controller?.stopImageStream();
-      await _controller?.pausePreview();
-    } catch (_) {}
-  }
+  // Future<void> _stopCameraStream() async {
+  //   try {
+  //     await _controller?.stopImageStream();
+  //     await _controller?.pausePreview();
+  //   } catch (_) {}
+  // }
 
   Future<void> _ensureModelLoaded(dynamic model) async {
     if (!model.isLoaded) {

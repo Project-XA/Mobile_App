@@ -1,23 +1,20 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/utils/app_assets.dart';
+import 'package:mobile_app/core/widgets/adaptive_image.dart'; 
 
 class UserHeader extends StatelessWidget {
   final String userName;
   final String userRole;
   final String? userImage;
- 
 
   const UserHeader({
     super.key,
     required this.userName,
     required this.userRole,
     this.userImage,
-   
   });
 
   @override
@@ -25,7 +22,6 @@ class UserHeader extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isSmallScreen = constraints.maxWidth < 360;
-        
         return Container(
           padding: EdgeInsets.symmetric(
             horizontal: isSmallScreen ? 12.w : 16.w,
@@ -37,9 +33,7 @@ class UserHeader extends StatelessWidget {
                 userImage: userImage,
                 isSmallScreen: isSmallScreen,
               ),
-
               SizedBox(width: isSmallScreen ? 10.w : 12.w),
-
               Expanded(
                 child: _UserInfo(
                   userName: userName,
@@ -47,10 +41,7 @@ class UserHeader extends StatelessWidget {
                   isSmallScreen: isSmallScreen,
                 ),
               ),
-
               horizontalSpace(8.w),
-
-           
             ],
           ),
         );
@@ -71,7 +62,6 @@ class _UserAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = isSmallScreen ? 45.w : 50.w;
-    
     return Container(
       width: size,
       height: size,
@@ -88,10 +78,11 @@ class _UserAvatar extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10.r),
-        child: Image.asset(
-          userImage ?? Assets.assetsImagesUser,
+        child: AdaptiveImage(
+          imagePath: userImage,
+          defaultAssetPath: Assets.assetsImagesUser,
           fit: BoxFit.cover,
-          cacheWidth: (size * 2).toInt(), 
+          cacheWidth: (size * 2).toInt(),
         ),
       ),
     );
