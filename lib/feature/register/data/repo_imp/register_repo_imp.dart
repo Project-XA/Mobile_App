@@ -36,7 +36,7 @@ class RegisterRepoImp implements RegisterRepo {
 
       final apiResponse = await userRemoteDataSource.registerUser(request);
 
-      final nameParts = apiResponse.fullName.split(' ');
+      final nameParts = apiResponse.userResponse.fullName.split(' ');
       final firstNameEn = nameParts.isNotEmpty ? nameParts.first : '';
       final lastNameEn = nameParts.length > 1
           ? nameParts.sublist(1).join(' ')
@@ -50,11 +50,13 @@ class RegisterRepoImp implements RegisterRepo {
         birthDate: localUserData.birthDate,
         profileImage: localUserData.profileImage,
 
-        email: apiResponse.email,
+        email: apiResponse.userResponse.email,
         firstNameEn: firstNameEn,
         lastNameEn: lastNameEn,
 
-        organizations: [UserOrgModel(orgId: orgId, role: apiResponse.role)],
+        organizations: [
+          UserOrgModel(orgId: orgId, role: apiResponse.userResponse.role),
+        ],
       );
 
       await localDataSource.saveUserLogin(completeUserData);
