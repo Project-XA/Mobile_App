@@ -23,7 +23,7 @@ class AdminHome extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final isSmallScreen = width < 360;
 
-   // initAdminHome();
+    // initAdminHome();
 
     return BlocProvider(
       create: (context) => getIt<AdminCubit>()..loadUser(),

@@ -1,4 +1,5 @@
 import 'package:mobile_app/core/DI/get_it.dart';
+import 'package:mobile_app/core/services/register_lazy_if_not_registered.dart';
 import 'package:mobile_app/feature/home/presentation/admin/home/data/repo_imp/admin_repo_imp.dart';
 import 'package:mobile_app/feature/home/presentation/admin/home/data/repo_imp/session_repository_impl.dart';
 import 'package:mobile_app/feature/home/presentation/admin/home/data/service/http_server_service.dart';
@@ -11,11 +12,7 @@ import 'package:mobile_app/feature/home/presentation/admin/home/domain/use_cases
 import 'package:mobile_app/feature/home/presentation/admin/home/domain/use_cases/start_session_server_use_case.dart';
 import 'package:mobile_app/feature/home/presentation/admin/home/presentation/logic/admin_cubit.dart';
 
-void registerLazyIfNotRegistered<T extends Object>(T Function() factory) {
-  if (!getIt.isRegistered<T>()) {
-    getIt.registerLazySingleton<T>(factory);
-  }
-}
+
 
 void initAdminHome() {
   if (getIt.isRegistered<AdminCubit>()) return;

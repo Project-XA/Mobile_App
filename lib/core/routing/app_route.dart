@@ -1,8 +1,7 @@
 // core/routing/app_route.dart
 import 'package:flutter/material.dart';
-import 'package:mobile_app/core/DI/init_admin_home.dart';
+import 'package:mobile_app/core/DI/init_current_user_di.dart';
 import 'package:mobile_app/core/DI/init_user_home.dart';
-import 'package:mobile_app/core/DI/navigation_get_it.dart';
 import 'package:mobile_app/core/DI/register_get_it.dart';
 import 'package:mobile_app/core/DI/scan_ocr_di.dart';
 import 'package:mobile_app/core/routing/routes.dart';
@@ -34,9 +33,8 @@ class AppRoute {
         break;
 
       case Routes.mainNavigation:
-        initNavigation();
-        final role = settings.arguments as String? ?? 'User';
-        page = MainNavigationScreen(userRole: role);
+        initCurrentUserDi();
+        page = const MainNavigationScreen();
         break;
 
       case Routes.homePage:

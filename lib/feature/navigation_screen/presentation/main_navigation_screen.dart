@@ -1,48 +1,124 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mobile_app/core/DI/get_it.dart';
 import 'package:mobile_app/core/DI/init_admin_home.dart';
+import 'package:mobile_app/core/DI/init_current_user_di.dart';
 import 'package:mobile_app/core/DI/init_profile.dart';
 import 'package:mobile_app/core/DI/init_user_home.dart';
+import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_cubit.dart';
+import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_state.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/feature/home/presentation/admin/home/presentation/admin_home.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/profile_screen.dart';
 import 'package:mobile_app/feature/home/presentation/user/presentation/home_page.dart';
 
-class MainNavigationScreen extends StatefulWidget {
-  final String userRole;
-
-  const MainNavigationScreen({super.key, required this.userRole});
+class MainNavigationScreen extends StatelessWidget {
+  const MainNavigationScreen({super.key});
 
   @override
-  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: getIt<CurrentUserCubit>()..loadUser(),
+      child: BlocBuilder<CurrentUserCubit, CurrentUserState>(
+        builder: (context, state) {
+          // Loading State
+          if (state is CurrentUserLoading || state is CurrentUserInitial) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          // Error State
+          if (state is CurrentUserError) {
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      size: 60,
+                      color: Colors.red,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Error Occurred',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(state.message),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () =>
+                          context.read<CurrentUserCubit>().loadUser(),
+                      child: const Text('Try Again'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          // Success - Get role and show appropriate navigation
+          final cubit = context.read<CurrentUserCubit>();
+          final role = cubit.role;
+
+          if (role == null) {
+            return const Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      size: 60,
+                      color: Colors.orange,
+                    ),
+                    SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          // Initialize based on role
+          if (role.toLowerCase() == 'admin') {
+            initAdminHome();
+          } else {
+            initUserHome();
+          }
+          initProfile();
+
+          // Show the actual navigation
+          return _MainNavigationContent(isAdmin: role.toLowerCase() == 'admin');
+        },
+      ),
+    );
+  }
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentIndex = 0;
+// Separate widget for the actual navigation content
+class _MainNavigationContent extends StatefulWidget {
+  final bool isAdmin;
+
+  const _MainNavigationContent({required this.isAdmin});
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.userRole.toLowerCase() == 'admin') {
-      initAdminHome();
-    } else {
-      initUserHome();
-    }
-    // initAdminHome();
-    initProfile();
-  }
+  State<_MainNavigationContent> createState() => _MainNavigationContentState();
+}
 
-  bool get _isAdmin => widget.userRole.toLowerCase() == 'admin';
+class _MainNavigationContentState extends State<_MainNavigationContent> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = <Widget>[
-      _isAdmin ? const AdminHome() : const HomePage(),
+      widget.isAdmin ? const AdminHome() : const HomePage(),
       const ProfileScreen(),
     ];
 
-    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         SystemNavigator.pop();
@@ -60,7 +136,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, -2),
