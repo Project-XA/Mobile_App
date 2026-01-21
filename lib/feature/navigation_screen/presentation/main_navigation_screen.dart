@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/DI/get_it.dart';
 import 'package:mobile_app/core/DI/init_admin_home.dart';
-import 'package:mobile_app/core/DI/init_current_user_di.dart';
-import 'package:mobile_app/core/DI/init_profile.dart';
 import 'package:mobile_app/core/DI/init_user_home.dart';
 import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_cubit.dart';
 import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_state.dart';
@@ -89,8 +87,6 @@ class MainNavigationScreen extends StatelessWidget {
           } else {
             initUserHome();
           }
-          initProfile();
-
           // Show the actual navigation
           return _MainNavigationContent(isAdmin: role.toLowerCase() == 'admin');
         },

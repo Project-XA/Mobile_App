@@ -6,8 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
-import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/logic/user_profile_cubit.dart';
-import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/logic/user_profile_state.dart';
+import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_cubit.dart';
+import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_state.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/widgets/image_source_option.dart';
 
 class ProfileImageSection extends StatelessWidget {
@@ -15,17 +15,10 @@ class ProfileImageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileCubit, UserProfileState>(
-      buildWhen: (previous, current) =>
-          current is UserProfileLoaded || current is ProfileImageUpdated,
+    return BlocBuilder<CurrentUserCubit, CurrentUserState>(
       builder: (context, state) {
-        String? profileImage;
-
-        if (state is UserProfileLoaded) {
-          profileImage = state.user.profileImage;
-        } else if (state is ProfileImageUpdated) {
-          profileImage = state.imagePath;
-        }
+        final user = context.read<CurrentUserCubit>().currentUser;
+        final profileImage = user?.profileImage;
 
         return Stack(
           children: [
@@ -37,7 +30,6 @@ class ProfileImageSection extends StatelessWidget {
                 border: Border.all(color: Colors.white, width: 3),
                 boxShadow: [
                   BoxShadow(
-                    // ignore: deprecated_member_use
                     color: AppColors.mainTextColorBlack.withOpacity(0.2),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
@@ -75,7 +67,6 @@ class ProfileImageSection extends StatelessWidget {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        // ignore: deprecated_member_use
                         color: AppColors.mainTextColorBlack.withOpacity(0.15),
                         blurRadius: 5,
                         offset: const Offset(0, 2),
@@ -130,7 +121,7 @@ class ProfileImageSection extends StatelessWidget {
                       imageQuality: 80,
                     );
                     if (image != null && context.mounted) {
-                      context.read<UserProfileCubit>().updateProfileImage(
+                      context.read<CurrentUserCubit>().updateProfileImage(
                             File(image.path),
                           );
                     }
@@ -146,7 +137,7 @@ class ProfileImageSection extends StatelessWidget {
                       imageQuality: 80,
                     );
                     if (image != null && context.mounted) {
-                      context.read<UserProfileCubit>().updateProfileImage(
+                      context.read<CurrentUserCubit>().updateProfileImage(
                             File(image.path),
                           );
                     }

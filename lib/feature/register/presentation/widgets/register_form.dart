@@ -37,16 +37,16 @@ class _RegisterFormState extends State<RegisterForm> {
   Future<void> _handleRegister() async {
     if (_formKey.currentState!.validate()) {
       try {
-        //  final localDataSource = getIt<UserLocalDataSource>();
-        // final localUserData = await localDataSource.getCurrentUser();
-        final user = UserModel(
-          nationalId: '123456667',
-          firstNameAr: 'عادل',
-          lastNameAr: 'محمد',
-          address: 'أسيوط - مصر',
-          birthDate: '1999-05-10',
-          profileImage: null,
-        );
+         final localDataSource = getIt<UserLocalDataSource>();
+        final localUserData = await localDataSource.getCurrentUser();
+        // final user = UserModel(
+        //   nationalId: '123456667',
+        //   firstNameAr: 'عادل',
+        //   lastNameAr: 'محمد',
+        //   address: 'أسيوط - مصر',
+        //   birthDate: '1999-05-10',
+        //   profileImage: null,
+        // );
 
         if (!mounted) return;
 
@@ -54,7 +54,7 @@ class _RegisterFormState extends State<RegisterForm> {
           orgId: _orgIdController.text.trim(),
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
-          localUserData: user,
+          localUserData: localUserData,
         );
       } catch (e) {
         if (!mounted) return;

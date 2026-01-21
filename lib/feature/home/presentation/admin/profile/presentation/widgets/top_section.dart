@@ -8,8 +8,8 @@ import 'package:mobile_app/core/services/onboarding_service.dart';
 import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
-import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/logic/user_profile_cubit.dart';
-import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/logic/user_profile_state.dart';
+import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_cubit.dart';
+import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_state.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/widgets/profile_image_section.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/widgets/user_info_section.dart';
 
@@ -18,12 +18,11 @@ class TopSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserProfileCubit, UserProfileState>(
-      buildWhen: (previous, current) => current is UserProfileLoaded,
+    return BlocBuilder<CurrentUserCubit, CurrentUserState>(
       builder: (context, state) {
-        if (state is! UserProfileLoaded) return const SizedBox.shrink();
-
-        final user = state.user;
+        final user = context.read<CurrentUserCubit>().currentUser;
+        
+        if (user == null) return const SizedBox.shrink();
 
         return Container(
           width: double.infinity,

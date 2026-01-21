@@ -29,7 +29,7 @@ class UserCubit extends Cubit<UserState> {
   Timer? _searchTimeoutTimer;
   Duration searchTimeout = const Duration(seconds: 30);
 
-  bool _sessionFound = false; 
+  bool _sessionFound = false;
 
   void setSearchTimeout(Duration duration) {
     searchTimeout = duration;
@@ -51,18 +51,18 @@ class UserCubit extends Cubit<UserState> {
     try {
       emit(const UserLoading());
 
-      final user = User(
-        nationalId: '1234569582577',
-        firstNameAr: 'احمد',
-        lastNameAr: 'محمد',
-        address: 'أسيوط - مصر',
-        birthDate: '1399-05-10',
-        email: 'ahmed@gmail.com',
-        firstNameEn: 'Ahmed',
-        lastNameEn: 'Mohamed',
-        profileImage: null,
-      );
-    //  final user = await getCurrentUserUseCase.call();
+      // final user = User(
+      //   nationalId: '1234569582577',
+      //   firstNameAr: 'احمد',
+      //   lastNameAr: 'محمد',
+      //   address: 'أسيوط - مصر',
+      //   birthDate: '1399-05-10',
+      //   email: 'ahmed@gmail.com',
+      //   firstNameEn: 'Ahmed',
+      //   lastNameEn: 'Mohamed',
+      //   profileImage: null,
+      // );
+      final user = await getCurrentUserUseCase.call();
       final stats = await getAttendanceStatsUseCase.call();
 
       emit(UserIdle(user: user, stats: stats));
@@ -78,7 +78,7 @@ class UserCubit extends Cubit<UserState> {
     if (currentState is! UserStateWithUser) return;
 
     try {
-      _sessionFound = false; 
+      _sessionFound = false;
 
       emit(
         SessionDiscoveryActive(
@@ -99,8 +99,8 @@ class UserCubit extends Cubit<UserState> {
 
       _discoverySubscription?.cancel();
       _discoverySubscription = discoverSessionsUseCase.call().listen((session) {
-        _sessionFound = true; 
-        _searchTimeoutTimer?.cancel(); 
+        _sessionFound = true;
+        _searchTimeoutTimer?.cancel();
         _handleDiscoveredSession(session);
       }, onError: (error) => _handleDiscoveryError(error));
 
@@ -192,7 +192,7 @@ class UserCubit extends Cubit<UserState> {
       _searchTimeoutTimer?.cancel();
       _searchTimeoutTimer = null;
 
-      _sessionFound = false; 
+      _sessionFound = false;
 
       await stopDiscoveryUseCase.call();
 

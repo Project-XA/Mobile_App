@@ -5,8 +5,8 @@ import 'package:mobile_app/core/services/spacing.dart';
 import 'package:mobile_app/core/services/toast_service.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
-import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/logic/user_profile_cubit.dart';
-import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/logic/user_profile_state.dart';
+import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_cubit.dart';
+import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_state.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/widgets/top_section.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/widgets/profile_body.dart';
 
@@ -17,16 +17,16 @@ class ProfileScreenBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backGroundColorWhite,
-      body: BlocListener<UserProfileCubit, UserProfileState>(
+      body: BlocListener<CurrentUserCubit, CurrentUserState>(
         listener: (context, state) {
-          if (state is UserProfileFailure) {
+          if (state is CurrentUserError) {
             showToast(message: state.message, type: ToastType.error);
-          } else if (state is ProfileImageUpdated) {
+          } else if (state is CurrentUserImageUpdated) {
             showToast(
               message: 'Profile image updated successfully',
               type: ToastType.success,
             );
-          } else if (state is ProfileUpdated) {
+          } else if (state is CurrentUserUpdated) {
             Navigator.pop(context);
             showToast(
               message: 'Profile updated successfully',
@@ -34,9 +34,9 @@ class ProfileScreenBody extends StatelessWidget {
             );
           }
         },
-        child: BlocBuilder<UserProfileCubit, UserProfileState>(
+        child: BlocBuilder<CurrentUserCubit, CurrentUserState>(
           builder: (context, state) {
-            if (state is UserProfileLoading) {
+            if (state is CurrentUserLoading) {
               return const Center(
                 child: CircularProgressIndicator(
                   color: AppColors.mainTextColorBlack,
@@ -44,7 +44,11 @@ class ProfileScreenBody extends StatelessWidget {
               );
             }
 
-            if (state is UserProfileLoaded) {
+            if (state is CurrentUserLoaded ||
+                state is CurrentUserUpdating ||
+                state is CurrentUserUpdatingImage ||
+                state is CurrentUserImageUpdated ||
+                state is CurrentUserUpdated) {
               return const Column(
                 children: [
                   TopSection(),

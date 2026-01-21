@@ -20,7 +20,7 @@ class AdminCubit extends Cubit<AdminState> {
   final ListenAttendanceUseCase listenAttendanceUseCase;
 
   StreamSubscription<AttendanceRecord>? _attendanceSubscription;
-  
+
   AdminCubit({
     required this.getCurrentUserUseCase,
     required this.createSessionUseCase,
@@ -30,15 +30,15 @@ class AdminCubit extends Cubit<AdminState> {
   }) : super(const AdminInitial());
 
   // ===================== User Loading =====================
-  
+
   Future<void> loadUser() async {
     try {
       emit(const AdminLoading());
 
       await Future.delayed(const Duration(milliseconds: 500));
 
-      final user = await getCurrentUserUseCase.call();
-      
+       final user = await getCurrentUserUseCase.call();
+
       // final user = User(
       //   nationalId: '123456667',
       //   firstNameAr: 'عادل',
@@ -48,8 +48,6 @@ class AdminCubit extends Cubit<AdminState> {
       //   email: 'adel@gmail.com',
       //   firstNameEn: 'Adel',
       //   lastNameEn: 'Mohamed',
-      //   organizations: [UserOrg(orgId: '1234', role: 'admin')],
-      //   profileImage: null,
       // );
 
       emit(AdminIdle(user: user));
@@ -59,10 +57,10 @@ class AdminCubit extends Cubit<AdminState> {
   }
 
   // ===================== Tab Navigation =====================
-  
+
   void changeTab(int index) {
     final currentState = state;
-    
+
     if (currentState is AdminIdle) {
       emit(currentState.copyWith(selectedTabIndex: index));
     } else if (currentState is SessionState) {
@@ -71,7 +69,7 @@ class AdminCubit extends Cubit<AdminState> {
   }
 
   // ===================== Session Management =====================
-  
+
   Future<void> createAndStartSession({
     required String name,
     required String location,
@@ -96,7 +94,6 @@ class AdminCubit extends Cubit<AdminState> {
 
       // Step 2: Start server and activate session
       await _startServer(currentState.user, currentState.selectedTabIndex);
-
     } catch (e) {
       _handleSessionError(
         currentState.user,
@@ -137,12 +134,14 @@ class AdminCubit extends Cubit<AdminState> {
       attendanceList: [],
     );
 
-    emit(SessionState(
-      user: user,
-      session: placeholderSession,
-      operation: SessionOperation.creating,
-      selectedTabIndex: selectedTabIndex,
-    ));
+    emit(
+      SessionState(
+        user: user,
+        session: placeholderSession,
+        operation: SessionOperation.creating,
+        selectedTabIndex: selectedTabIndex,
+      ),
+    );
 
     // Create session via use case
     final session = await createSessionUseCase(
@@ -156,12 +155,14 @@ class AdminCubit extends Cubit<AdminState> {
     await Future.delayed(const Duration(milliseconds: 500));
 
     // Update state with created session
-    emit(SessionState(
-      user: user,
-      session: session,
-      operation: SessionOperation.starting,
-      selectedTabIndex: selectedTabIndex,
-    ));
+    emit(
+      SessionState(
+        user: user,
+        session: session,
+        operation: SessionOperation.starting,
+        selectedTabIndex: selectedTabIndex,
+      ),
+    );
   }
 
   Future<void> _startServer(User user, int selectedTabIndex) async {
@@ -172,24 +173,31 @@ class AdminCubit extends Cubit<AdminState> {
     final serverInfo = await startSessionServerUseCase(currentState.session.id);
 
     // Start listening to attendance
-    _listenToAttendance(user, currentState.session, serverInfo, selectedTabIndex);
+    _listenToAttendance(
+      user,
+      currentState.session,
+      serverInfo,
+      selectedTabIndex,
+    );
 
     // Activate session
     final activeSession = currentState.session.copyWith(
       status: SessionStatus.active,
     );
 
-    emit(SessionState(
-      user: user,
-      session: activeSession,
-      operation: SessionOperation.active,
-      serverInfo: serverInfo,
-      selectedTabIndex: selectedTabIndex,
-    ));
+    emit(
+      SessionState(
+        user: user,
+        session: activeSession,
+        operation: SessionOperation.active,
+        serverInfo: serverInfo,
+        selectedTabIndex: selectedTabIndex,
+      ),
+    );
   }
 
   // ===================== Attendance Listening =====================
-  
+
   void _listenToAttendance(
     User user,
     Session session,
@@ -212,10 +220,9 @@ class AdminCubit extends Cubit<AdminState> {
         );
 
         // Emit with latest record (for animations/notifications)
-        emit(currentState.copyWith(
-          session: updatedSession,
-          latestRecord: record,
-        ));
+        emit(
+          currentState.copyWith(session: updatedSession, latestRecord: record),
+        );
 
         // Clear latest record after a short delay
         Future.delayed(const Duration(milliseconds: 100), () {
@@ -232,7 +239,7 @@ class AdminCubit extends Cubit<AdminState> {
   }
 
   // ===================== End Session =====================
-  
+
   Future<void> endSession() async {
     final currentState = state;
     if (currentState is! SessionState) return;
@@ -253,19 +260,23 @@ class AdminCubit extends Cubit<AdminState> {
         status: SessionStatus.ended,
       );
 
-      emit(currentState.copyWith(
-        session: endedSession,
-        operation: SessionOperation.ended,
-      ));
+      emit(
+        currentState.copyWith(
+          session: endedSession,
+          operation: SessionOperation.ended,
+        ),
+      );
 
       // Wait for UI feedback
       await Future.delayed(const Duration(seconds: 2));
 
       // Return to idle state
-      emit(AdminIdle(
-        user: currentState.user,
-        selectedTabIndex: currentState.selectedTabIndex,
-      ));
+      emit(
+        AdminIdle(
+          user: currentState.user,
+          selectedTabIndex: currentState.selectedTabIndex,
+        ),
+      );
     } catch (e) {
       _handleSessionError(
         currentState.user,
@@ -276,26 +287,25 @@ class AdminCubit extends Cubit<AdminState> {
   }
 
   // ===================== Error Handling =====================
-  
+
   void _handleSessionError(User user, String message, int selectedTabIndex) {
-    emit(SessionError(
-      user: user,
-      message: message,
-      selectedTabIndex: selectedTabIndex,
-    ));
+    emit(
+      SessionError(
+        user: user,
+        message: message,
+        selectedTabIndex: selectedTabIndex,
+      ),
+    );
 
     Future.delayed(const Duration(seconds: 2), () {
       if (state is SessionError) {
-        emit(AdminIdle(
-          user: user,
-          selectedTabIndex: selectedTabIndex,
-        ));
+        emit(AdminIdle(user: user, selectedTabIndex: selectedTabIndex));
       }
     });
   }
 
   // ===================== Cleanup =====================
-  
+
   @override
   Future<void> close() {
     _attendanceSubscription?.cancel();

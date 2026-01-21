@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_cubit.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/data/service/dialog_service.dart';
-import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/logic/user_profile_cubit.dart';
 import 'package:mobile_app/feature/home/presentation/admin/profile/presentation/widgets/info_card.dart';
 
 class FirstNameCard extends StatelessWidget {
@@ -106,7 +106,7 @@ class AddressCard extends StatelessWidget {
         'Address',
         address,
         (newValue) =>
-            context.read<UserProfileCubit>().updateUser(address: newValue),
+            context.read<CurrentUserCubit>().updateUser(address: newValue),
       ),
     );
   }
