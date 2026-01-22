@@ -8,7 +8,7 @@ import 'package:mobile_app/core/networking/dio_factory.dart';
 import 'package:mobile_app/core/networking/network_service.dart';
 import 'package:mobile_app/core/services/auth/auth_state_service.dart';
 import 'package:mobile_app/core/services/auth/onboarding_service.dart';
-import 'package:mobile_app/features/home/data/models/user_model.dart';
+import 'package:mobile_app/core/curren_user/Data/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final getIt = GetIt.instance;

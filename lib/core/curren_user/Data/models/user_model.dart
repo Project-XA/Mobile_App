@@ -1,9 +1,9 @@
 // data/models/user_model.dart
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mobile_app/features/home/data/models/user_org_model.dart';
-import 'package:mobile_app/features/home/domain/entities/user.dart';
-import 'package:mobile_app/features/home/domain/entities/user_org.dart';
+import 'package:mobile_app/core/curren_user/Data/models/user_org_model.dart';
+import 'package:mobile_app/core/curren_user/domain/entities/user.dart';
+import 'package:mobile_app/core/curren_user/domain/entities/user_org.dart';
 
 part 'user_model.g.dart';
 

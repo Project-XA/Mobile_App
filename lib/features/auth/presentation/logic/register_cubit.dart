@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/home/data/models/user_model.dart';
+import 'package:mobile_app/core/curren_user/Data/models/user_model.dart';
 import 'package:mobile_app/features/auth/domain/use_cases/register_use_case.dart';
 import 'package:mobile_app/features/auth/presentation/logic/register_state.dart';
 

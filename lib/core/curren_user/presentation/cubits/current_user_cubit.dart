@@ -6,7 +6,7 @@ import 'package:mobile_app/core/curren_user/domain/use_case/update_profile_image
 import 'package:mobile_app/core/curren_user/domain/use_case/update_user_use_case.dart';
 import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_state.dart';
 
-import 'package:mobile_app/features/home/domain/entities/user.dart';
+import 'package:mobile_app/core/curren_user/domain/entities/user.dart';
 
 class CurrentUserCubit extends Cubit<CurrentUserState> {
   final GetCurrentUserUseCase _getCurrentUserUseCase;

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:mobile_app/core/curren_user/Data/local_data_soruce/user_local_data_source.dart';
 import 'package:mobile_app/core/curren_user/domain/repo/current_user_repo.dart';
-import 'package:mobile_app/features/home/data/models/user_model.dart';
-import 'package:mobile_app/features/home/domain/entities/user.dart';
+import 'package:mobile_app/core/curren_user/Data/models/user_model.dart';
+import 'package:mobile_app/core/curren_user/domain/entities/user.dart';
 
 class CurrentUserRepositoryImpl implements CurrentUserRepository {
   final UserLocalDataSource _localDataSource;

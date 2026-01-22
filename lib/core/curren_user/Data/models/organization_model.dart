@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mobile_app/features/home/domain/entities/organization.dart';
+import 'package:mobile_app/core/curren_user/domain/entities/organization.dart';
 part 'organization_model.g.dart';
 
 @JsonSerializable()

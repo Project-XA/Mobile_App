@@ -1,7 +1,7 @@
 // feature/scan_OCR/domain/usecases/save_scanned_card_usecase.dart
 
 import 'package:mobile_app/core/curren_user/Data/local_data_soruce/user_local_data_source.dart';
-import 'package:mobile_app/features/home/data/models/user_model.dart';
+import 'package:mobile_app/core/curren_user/Data/models/user_model.dart';
 
 class SaveScannedCardUseCase {
   final UserLocalDataSource _dataSource;

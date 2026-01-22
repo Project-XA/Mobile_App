@@ -1,5 +1,5 @@
 import 'package:mobile_app/core/curren_user/domain/repo/current_user_repo.dart';
-import 'package:mobile_app/features/home/domain/entities/user.dart';
+import 'package:mobile_app/core/curren_user/domain/entities/user.dart';
 
 class GetCurrentUserUseCase {
   final CurrentUserRepository _repository;

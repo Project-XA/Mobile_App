@@ -1,5 +1,5 @@
 // domain/entities/user.dart
-import 'package:mobile_app/features/home/domain/entities/user_org.dart';
+import 'package:mobile_app/core/curren_user/domain/entities/user_org.dart';
 
 class User {
   final String nationalId;

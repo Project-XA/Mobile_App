@@ -7,14 +7,14 @@ import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_sta
 import 'package:mobile_app/core/services/UI/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/utils/app_assets.dart';
+import 'package:mobile_app/core/widgets/info_card.dart';
+import 'package:mobile_app/core/widgets/toggle_taps.dart';
+import 'package:mobile_app/core/widgets/user_header.dart';
 import 'package:mobile_app/features/home/presentation/admin/home/presentation/logic/admin_cubit.dart';
 import 'package:mobile_app/features/home/presentation/admin/home/presentation/logic/admin_state.dart';
 import 'package:mobile_app/features/home/presentation/admin/home/presentation/widgets/admin_home_shimmer.dart';
 import 'package:mobile_app/features/home/presentation/admin/home/presentation/widgets/manage_session_view.dart';
 import 'package:mobile_app/features/home/presentation/admin/home/presentation/widgets/user_attendency_view.dart';
-import 'package:mobile_app/features/home/presentation/widgets/info_card.dart';
-import 'package:mobile_app/features/home/presentation/widgets/toggle_taps.dart';
-import 'package:mobile_app/features/home/presentation/widgets/user_header.dart';
 
 class AdminHome extends StatelessWidget {
   const AdminHome({super.key});

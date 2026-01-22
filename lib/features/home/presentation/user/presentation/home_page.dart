@@ -19,8 +19,8 @@ import 'package:mobile_app/features/home/presentation/user/presentation/widgets/
 import 'package:mobile_app/features/home/presentation/user/presentation/widgets/check_in_view.dart';
 import 'package:mobile_app/features/home/presentation/user/presentation/widgets/no_session_card.dart';
 import 'package:mobile_app/features/home/presentation/user/presentation/widgets/searching_session_card.dart';
-import 'package:mobile_app/features/home/presentation/widgets/info_card.dart';
-import 'package:mobile_app/features/home/presentation/widgets/user_header.dart';
+import 'package:mobile_app/core/widgets/info_card.dart';
+import 'package:mobile_app/core/widgets/user_header.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

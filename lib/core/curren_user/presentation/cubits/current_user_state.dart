@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mobile_app/features/home/domain/entities/user.dart';
+import 'package:mobile_app/core/curren_user/domain/entities/user.dart';
 
 sealed class CurrentUserState extends Equatable {
   const CurrentUserState();

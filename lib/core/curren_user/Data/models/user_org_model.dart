@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mobile_app/features/home/domain/entities/user_org.dart';
+import 'package:mobile_app/core/curren_user/domain/entities/user_org.dart';
 
 part 'user_org_model.g.dart';
 
