@@ -1,20 +1,20 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:mobile_app/core/DI/get_it.dart';
-import 'package:mobile_app/features/home/presentation/user/data/repos_imp/session_discovery_repo_impl.dart';
-import 'package:mobile_app/features/home/presentation/user/data/repos_imp/user_attendence_repo_impl.dart';
-import 'package:mobile_app/features/home/presentation/user/data/services/attendence_service.dart';
-import 'package:mobile_app/features/home/presentation/user/data/services/session_discovery_service.dart';
-import 'package:mobile_app/features/home/presentation/user/domain/repos/session_discovery_repo.dart';
-import 'package:mobile_app/features/home/presentation/user/domain/repos/user_attendence_repo.dart';
-import 'package:mobile_app/features/home/presentation/user/domain/use_cases/check_in_use_case.dart';
-import 'package:mobile_app/features/home/presentation/user/domain/use_cases/discover_session_use_case.dart';
-import 'package:mobile_app/features/home/presentation/user/domain/use_cases/get_attendence_history_use_case.dart';
-import 'package:mobile_app/features/home/presentation/user/domain/use_cases/get_attendence_status_use_case.dart';
-import 'package:mobile_app/features/home/presentation/user/domain/use_cases/start_discovery_use_case.dart';
-import 'package:mobile_app/features/home/presentation/user/domain/use_cases/stop_discover_use_case.dart';
-import 'package:mobile_app/features/home/presentation/user/presentation/logic/user_cubit.dart';
+import 'package:mobile_app/features/attendance/data/repos_imp/session_discovery_repo_impl.dart';
+import 'package:mobile_app/features/attendance/data/repos_imp/user_attendence_repo_impl.dart';
+import 'package:mobile_app/features/attendance/data/services/attendence_service.dart';
+import 'package:mobile_app/features/attendance/data/services/session_discovery_service.dart';
+import 'package:mobile_app/features/attendance/domain/repos/session_discovery_repo.dart';
+import 'package:mobile_app/features/attendance/domain/repos/user_attendence_repo.dart';
+import 'package:mobile_app/features/attendance/domain/use_cases/check_in_use_case.dart';
+import 'package:mobile_app/features/attendance/domain/use_cases/discover_session_use_case.dart';
+import 'package:mobile_app/features/attendance/domain/use_cases/get_attendence_history_use_case.dart';
+import 'package:mobile_app/features/attendance/domain/use_cases/get_attendence_status_use_case.dart';
+import 'package:mobile_app/features/attendance/domain/use_cases/start_discovery_use_case.dart';
+import 'package:mobile_app/features/attendance/domain/use_cases/stop_discover_use_case.dart';
+import 'package:mobile_app/features/attendance/presentation/logic/user_cubit.dart';
 
-void initUserHome() {
+void initUserAttendace() {
   
   if (!getIt.isRegistered<SessionDiscoveryService>()) {
     getIt.registerLazySingleton<SessionDiscoveryService>(

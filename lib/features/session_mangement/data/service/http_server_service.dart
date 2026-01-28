@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:mobile_app/features/session_mangement/data/models/attendence_request.dart';
 import 'package:mobile_app/features/session_mangement/data/models/server_info.dart';
 import 'package:mobile_app/features/session_mangement/domain/entities/session.dart';
@@ -19,15 +20,29 @@ class HttpServerService {
   Session? _currentSession;
   bool get isServerRunning => _server != null;
 
+  double? _sessionLatitude;
+  double? _sessionLongitude;
+  double? _allowedRadius;
+
   void updateSessionData(Session session) {
     _currentSession = session;
   }
 
-  Future<ServerInfo> startServer(String sessionId, Session session) async {
+  Future<ServerInfo> startServer(
+    String sessionId,
+    Session session, {
+    double? latitude,
+    double? longitude,
+    double? allowedRadius,
+  }) async {
     try {
       _server = await HttpServer.bind(InternetAddress.anyIPv4, 8080);
       _currentSessionId = sessionId;
       _currentSession = session;
+      
+      _sessionLatitude = latitude;
+      _sessionLongitude = longitude;
+      _allowedRadius = allowedRadius;
 
       _server!.listen((HttpRequest request) {
         _handleRequest(request);
@@ -43,9 +58,7 @@ class HttpServerService {
     }
   }
 
-  // Handle HTTP Requests
   Future<void> _handleRequest(HttpRequest request) async {
-    // Enable CORS
     request.response.headers.add('Access-Control-Allow-Origin', '*');
     request.response.headers.add('Content-Type', 'application/json');
 
@@ -71,7 +84,6 @@ class HttpServerService {
     }
   }
 
-  // Handle Attendance POST Request
   Future<void> _handleAttendanceRequest(HttpRequest request) async {
     try {
       final body = await utf8.decoder.bind(request).join();
@@ -79,11 +91,56 @@ class HttpServerService {
 
       final attendanceRequest = AttendanceRequest.fromJson(data);
 
-      if (_currentSessionId == null) {
+      if (_currentSessionId == null || _currentSession == null) {
         request.response
           ..statusCode = HttpStatus.badRequest
           ..write(
             jsonEncode({'status': 'error', 'message': 'No active session'}),
+          );
+        return;
+      }
+
+      final alreadyCheckedIn = _currentSession!.attendanceList.any(
+        (record) => record.deviceIdHash == attendanceRequest.deviceIdHash,
+      );
+
+      if (alreadyCheckedIn) {
+        request.response
+          ..statusCode = HttpStatus.conflict 
+          ..write(
+            jsonEncode({
+              'status': 'error',
+              'message': 'Already checked in',
+              'code': 'ALREADY_CHECKED_IN',
+            }),
+          );
+        return;
+      }
+
+      if (attendanceRequest.location != null) {
+        final locationValid = _validateUserLocation(attendanceRequest.location!);
+        
+        if (!locationValid) {
+          request.response
+            ..statusCode = HttpStatus.forbidden
+            ..write(
+              jsonEncode({
+                'status': 'error',
+                'message': 'Out of zone',
+                'code': 'OUT_OF_ZONE',
+              }),
+            );
+          return;
+        }
+      } else {
+        request.response
+          ..statusCode = HttpStatus.badRequest
+          ..write(
+            jsonEncode({
+              'status': 'error',
+              'message': 'Location is required',
+              'code': 'LOCATION_REQUIRED',
+            }),
           );
         return;
       }
@@ -96,6 +153,7 @@ class HttpServerService {
         ..write(
           jsonEncode({
             'status': 'success',
+            'message': 'Attendance recorded successfully',
             'time': DateTime.now().toIso8601String(),
             'sessionId': _currentSessionId,
           }),
@@ -109,7 +167,61 @@ class HttpServerService {
     }
   }
 
-  // Health Check Endpoint
+  bool _validateUserLocation(String locationString) {
+    try {
+      if (_sessionLatitude == null || 
+          _sessionLongitude == null || 
+          _allowedRadius == null) {
+        return false;
+      }
+
+      final coords = locationString.split(',');
+      if (coords.length != 2) {
+        return false;
+      }
+
+      final userLat = double.parse(coords[0].trim());
+      final userLng = double.parse(coords[1].trim());
+
+      final distance = _calculateDistance(
+        userLat,
+        userLng,
+        _sessionLatitude!,
+        _sessionLongitude!,
+      );
+
+
+      return distance <= _allowedRadius!;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  double _calculateDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
+    const earthRadius = 6371000;
+    
+    final dLat = _toRadians(lat2 - lat1);
+    final dLon = _toRadians(lon2 - lon1);
+    
+    final a = 
+      (sin(dLat / 2) * sin(dLat / 2)) +
+      cos(_toRadians(lat1)) * cos(_toRadians(lat2)) *
+      (sin(dLon / 2) * sin(dLon / 2));
+    
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    
+    return earthRadius * c; 
+  }
+
+  double _toRadians(double degrees) {
+    return degrees * pi / 180;
+  }
+
   void _handleHealthCheck(HttpRequest request) {
     request.response
       ..statusCode = HttpStatus.ok
@@ -197,7 +309,6 @@ class HttpServerService {
     }
   }
 
-  // Stop Server
   Future<void> stopServer() async {
     try {
       if (_mdnsRegistration != null) {
@@ -209,6 +320,9 @@ class HttpServerService {
       _server = null;
       _currentSessionId = null;
       _currentSession = null;
+      _sessionLatitude = null;
+      _sessionLongitude = null;
+      _allowedRadius = null;
     } catch (e) {
       // Error stopping server
     }

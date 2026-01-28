@@ -57,7 +57,6 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
   if (currentState is! SessionManagementStateWithTab) return;
 
   try {
-    // ✅ Create session
     await _createSession(
       name: name,
       location: location,
@@ -68,12 +67,9 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
       selectedTabIndex: currentState.selectedTabIndex,
     );
 
-    // ✅ Start server
     await _startServer(currentState.selectedTabIndex);
     
   } catch (e) {
-    // ✅ Print للـ debugging
-    print('❌ Session creation failed: $e');
     
     _handleSessionError(
       'Failed to start session: $e',
@@ -82,14 +78,13 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
   }
 }
 
-  // ✅ UPDATED: Added allowedRadius parameter
   Future<void> _createSession({
     required String name,
     required String location,
     required String connectionMethod,
     required TimeOfDay startTime,
     required int durationMinutes,
-    required double allowedRadius, // ✅ NEW
+    required double allowedRadius, 
     required int selectedTabIndex,
   }) async {
     final now = DateTime.now();
@@ -121,14 +116,13 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
       ),
     );
 
-    // ✅ Pass allowedRadius to use case
     final session = await createSessionUseCase(
       name: name,
       location: location,
       connectionMethod: connectionMethod,
       startTime: sessionStartTime,
       durationMinutes: durationMinutes,
-      allowedRadius: allowedRadius, // ✅ NEW
+      allowedRadius: allowedRadius, 
     );
 
     await Future.delayed(const Duration(milliseconds: 500));
@@ -247,7 +241,6 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
   }
 
   void _handleSessionError(String message, int selectedTabIndex) {
-    print('❌ Error: $message');
     emit(
       SessionError(
         message: message,

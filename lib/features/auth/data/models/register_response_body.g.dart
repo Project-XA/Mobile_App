@@ -27,6 +27,7 @@ UserResponse _$UserResponseFromJson(Map<String, dynamic> json) => UserResponse(
       userName: json['userName'] as String,
       email: json['email'] as String,
       phoneNumber: json['phoneNumber'] as String?,
+      username: json['username'] as String?,
       organizationName: json['organizationName'] as String?,
       organizationId: (json['organizationId'] as num?)?.toInt(),
       role: json['role'] as String,
@@ -46,4 +47,5 @@ Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>
       'updatedAt': instance.updatedAt,
       'organizationId': instance.organizationId,
       'organizationName': instance.organizationName,
+      'username': instance.username,
     };

@@ -30,6 +30,7 @@ class UserResponse {
   final String updatedAt;
   final int? organizationId;
   final String? organizationName;
+  final String? username;
 
   UserResponse({
     required this.id,
@@ -37,6 +38,7 @@ class UserResponse {
     required this.userName,
     required this.email,
     this.phoneNumber,
+    this.username,
     this.organizationName,
     this.organizationId,
     required this.role,

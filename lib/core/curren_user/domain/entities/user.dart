@@ -18,12 +18,14 @@ class User {
   final String? profileImage;
 
   final String? loginToken;
+  final String? username;
 
   User({
     required this.nationalId,
     required this.firstNameAr,
     required this.lastNameAr,
     this.address,
+    this.username,
     this.id,
     this.birthDate,
     this.email,
@@ -49,6 +51,7 @@ class User {
     String? idCardImage,
     String? id,
     String? loginToken,
+    String? username,
   }) {
     return User(
       id: id ?? this.id,
@@ -64,6 +67,7 @@ class User {
       profileImage: profileImage ?? this.profileImage,
       idCardImage: idCardImage ?? this.idCardImage,
       loginToken: loginToken ?? this.loginToken,
+      username: username ?? this.username,
     );
   }
 

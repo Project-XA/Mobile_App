@@ -10,7 +10,7 @@ import 'package:mobile_app/core/curren_user/presentation/cubits/current_user_sta
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/features/session_mangement/presentation/admin_dashboard.dart';
 import 'package:mobile_app/features/profile/presentation/profile_screen.dart';
-import 'package:mobile_app/features/home/presentation/user/presentation/home_page.dart';
+import 'package:mobile_app/features/attendance/presentation/user_dashboard_screen.dart';
 
 class MainNavigationScreen extends StatelessWidget {
   const MainNavigationScreen({super.key});
@@ -59,10 +59,8 @@ class MainNavigationScreen extends StatelessWidget {
             );
           }
 
-          // Success - Get role and show appropriate navigation
           final cubit = context.read<CurrentUserCubit>();
           final role = cubit.role;
-         // print("user role=: $role");
           if (role == null) {
             return const Scaffold(
               body: Center(
@@ -81,13 +79,11 @@ class MainNavigationScreen extends StatelessWidget {
             );
           }
 
-          // Initialize based on role
           if (role.toLowerCase() == 'admin') {
             initSessionManagement();
           } else {
-            initUserHome();
+            initUserAttendace();
           }
-          // Show the actual navigation
           return _MainNavigationContent(isAdmin: role.toLowerCase() == 'admin');
         },
       ),
@@ -95,7 +91,6 @@ class MainNavigationScreen extends StatelessWidget {
   }
 }
 
-// Separate widget for the actual navigation content
 class _MainNavigationContent extends StatefulWidget {
   final bool isAdmin;
 
@@ -111,7 +106,7 @@ class _MainNavigationContentState extends State<_MainNavigationContent> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = <Widget>[
-      widget.isAdmin ? const AdminDashboard() : const HomePage(),
+      widget.isAdmin ? const AdminDashboard() : const UserDashboardScreen(),
       const ProfileScreen(),
     ];
 

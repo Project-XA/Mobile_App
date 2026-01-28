@@ -43,7 +43,6 @@ class AdminDashboard extends StatelessWidget {
 
             final currentUserCubit = context.read<CurrentUserCubit>();
             final user = currentUserCubit.currentUser;
-            print(  '✅ Current user data in AdminDashboard: ${user?.organizations?.first.organizationName}');
             if (user == null) {
               return const Center(child: CircularProgressIndicator());
             }

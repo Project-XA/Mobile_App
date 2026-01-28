@@ -31,6 +31,7 @@ class ActiveSessionView extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(child: SessionInfoCard(session: session)),
+          SliverToBoxAdapter(child: verticalSpace(10)),
           SliverToBoxAdapter(child: ServerInfoCard(serverInfo: serverInfo)),
           SliverToBoxAdapter(child: verticalSpace(20)),
           SliverToBoxAdapter(child: _buildEndSessionButton(context)),

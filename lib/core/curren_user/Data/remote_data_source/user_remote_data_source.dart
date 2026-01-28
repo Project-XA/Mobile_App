@@ -43,19 +43,16 @@ class UserRemoteDataSourceImp implements UserRemoteDataSource {
   }
 
   @override
-Future<void> createSession(
-  CreateSessionRequestModel createSessionRequest,
-) async {
-  // ✅ شيل الـ try-catch عشان الـ errors تطلع بره
-  final response = await networkService.post(
-    ApiConst.createSession,
-    createSessionRequest.toJson(),
-  );
-  
-  print('✅ Create session response: ${response.data}');
-  
-  if (response.statusCode != 200 && response.statusCode != 201) {
-    throw Exception('Failed to create session: ${response.statusCode}');
+  Future<void> createSession(
+    CreateSessionRequestModel createSessionRequest,
+  ) async {
+    final response = await networkService.post(
+      ApiConst.createSession,
+      createSessionRequest.toJson(),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Failed to create session: ${response.statusCode}');
+    }
   }
-}
 }

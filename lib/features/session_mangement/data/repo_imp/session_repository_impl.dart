@@ -13,14 +13,18 @@ class SessionRepositoryImpl implements SessionRepository {
   final UserRemoteDataSource _remoteDataSource;
   final UserLocalDataSource _localDataSource;
   Session? _currentSession;
+  
+  double? _sessionLatitude;
+  double? _sessionLongitude;
+  double? _allowedRadius;
 
   SessionRepositoryImpl({
     required HttpServerService serverService,
     required UserRemoteDataSource remoteDataSource,
     required UserLocalDataSource localDataSource,
-  }) : _serverService = serverService,
-       _remoteDataSource = remoteDataSource,
-       _localDataSource = localDataSource;
+  })  : _serverService = serverService,
+        _remoteDataSource = remoteDataSource,
+        _localDataSource = localDataSource;
 
   @override
   Future<Session> createSession({
@@ -65,13 +69,17 @@ class SessionRepositoryImpl implements SessionRepository {
 
       await _remoteDataSource.createSession(requestModel);
 
+      _sessionLatitude = latitude;
+      _sessionLongitude = longitude;
+      _allowedRadius = allowedRadius;
+
       _currentSession = Session(
         id: sessionId,
         name: name,
         location: location,
         connectionMethod: connectionMethod,
         startTime: startAt,
-        durationMinutes: endAt.difference(startAt).inMinutes, 
+        durationMinutes: endAt.difference(startAt).inMinutes,
         status: SessionStatus.inactive,
         connectedClients: 0,
         attendanceList: [],
@@ -93,6 +101,9 @@ class SessionRepositoryImpl implements SessionRepository {
       final serverInfo = await _serverService.startServer(
         sessionId,
         _currentSession!,
+        latitude: _sessionLatitude,
+        longitude: _sessionLongitude,
+        allowedRadius: _allowedRadius,
       );
 
       _currentSession = _currentSession!.copyWith(status: SessionStatus.active);
@@ -113,6 +124,10 @@ class SessionRepositoryImpl implements SessionRepository {
       await _serverService.stopServer();
       _currentSession = _currentSession!.copyWith(status: SessionStatus.ended);
       _currentSession = null;
+      
+      _sessionLatitude = null;
+      _sessionLongitude = null;
+      _allowedRadius = null;
     } catch (e) {
       throw Exception('Failed to end session: $e');
     }

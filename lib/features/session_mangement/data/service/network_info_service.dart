@@ -79,7 +79,6 @@ class NetworkInfoService {
       final bssid = await getWifiBSSID();
       final position = await getCurrentLocation();
 
-      print('✅ Network info: SSID=$ssid, BSSID=$bssid');
 
       return NetworkLocationInfo(
         ssid: ssid ?? 'Unknown',
@@ -88,7 +87,6 @@ class NetworkInfoService {
         longitude: position.longitude,
       );
     } catch (e) {
-      print('❌ Network info error: $e');
       rethrow;
     }
   }

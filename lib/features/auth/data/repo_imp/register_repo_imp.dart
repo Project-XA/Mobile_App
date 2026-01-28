@@ -60,6 +60,7 @@ class RegisterRepoImp implements RegisterRepo {
         lastNameEn: lastNameEn,
         loginToken: apiResponse.loginToken,
         idCardImage: localUserData.idCardImage,
+        username: apiResponse.userResponse.username,
 
         organizations: [
           UserOrgModel(

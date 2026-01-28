@@ -47,13 +47,15 @@ class UserModel extends HiveObject {
   String? loginToken;
   @HiveField(12)
   String? id;
+  @HiveField(13)
+  String? username;
 
   UserModel({
     required this.nationalId,
     required this.firstNameAr,
     required this.lastNameAr,
     this.id,
-
+    this.username,
     this.address,
     this.birthDate,
     this.email,
@@ -87,6 +89,7 @@ class UserModel extends HiveObject {
       profileImage: user.profileImage,
       idCardImage: user.idCardImage,
       loginToken: user.loginToken,
+      username: user.username,
     );
   }
 
@@ -103,12 +106,17 @@ class UserModel extends HiveObject {
       lastNameEn: lastNameEn,
       organizations: organizations
           ?.map(
-            (orgModel) => UserOrg(organizationId: orgModel.organizationId, role: orgModel.role, organizationName: orgModel.organizationName),
+            (orgModel) => UserOrg(
+              organizationId: orgModel.organizationId,
+              role: orgModel.role,
+              organizationName: orgModel.organizationName,
+            ),
           )
           .toList(),
       profileImage: profileImage,
       idCardImage: idCardImage,
       loginToken: loginToken,
+      username: username,
     );
   }
 
@@ -126,7 +134,9 @@ class UserModel extends HiveObject {
       organizations: organizations,
       profileImage: profileImage,
       idCardImage: idCardImage,
-      loginToken: null, // Clear token only
+      loginToken: null, 
+      username: username,
+      // Clear token only
     );
   }
 }
