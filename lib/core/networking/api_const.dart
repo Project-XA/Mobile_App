@@ -5,4 +5,5 @@ class ApiConst {
   static const String createSession = 'Session/Create-Session';
   static const String refreshToken = "null";
   static const String userStatistics = "user/statistics";
+  static const String saveAttendance = "Session/save-attend";
 }
