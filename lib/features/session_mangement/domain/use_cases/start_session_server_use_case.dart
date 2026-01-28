@@ -1,4 +1,4 @@
-import 'package:mobile_app/features/session_mangement/data/models/server_info.dart';
+import 'package:mobile_app/features/session_mangement/domain/entities/server_info.dart';
 import 'package:mobile_app/features/session_mangement/domain/repos/session_repository.dart';
 
 class StartSessionServerUseCase {
@@ -6,7 +6,7 @@ class StartSessionServerUseCase {
 
   StartSessionServerUseCase(this._repository);
 
-  Future<ServerInfo> call(String sessionId) async {
+  Future<ServerInfo> call(int sessionId) async {
     return await _repository.startSessionServer(sessionId);
   }
 }

@@ -7,7 +7,7 @@ import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
 import 'package:mobile_app/core/themes/font_weight_helper.dart';
 import 'package:mobile_app/core/widgets/custom_app_button.dart';
-import 'package:mobile_app/features/session_mangement/data/models/server_info.dart';
+import 'package:mobile_app/features/session_mangement/domain/entities/server_info.dart';
 import 'package:mobile_app/features/session_mangement/domain/entities/session.dart';
 import 'package:mobile_app/features/session_mangement/presentation/logic/session_management_cubit.dart';
 import 'package:mobile_app/features/session_mangement/presentation/logic/session_management_state.dart';

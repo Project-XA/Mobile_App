@@ -5,7 +5,7 @@ import 'package:mobile_app/core/services/UI/spacing.dart';
 import 'package:mobile_app/core/themes/app_colors.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
 import 'package:mobile_app/core/themes/font_weight_helper.dart';
-import 'package:mobile_app/features/session_mangement/domain/entities/attendency_record.dart';
+import 'package:mobile_app/features/session_mangement/data/models/attendency_record.dart';
 
 class AttendanceListWidget extends StatelessWidget {
   final List<AttendanceRecord> attendanceList;

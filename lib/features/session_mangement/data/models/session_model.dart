@@ -2,7 +2,7 @@ import 'package:mobile_app/features/session_mangement/data/models/attendency_mod
 import 'package:mobile_app/features/session_mangement/domain/entities/session.dart';
 
 class SessionModel {
-  final String id;
+  final int id;
   final String name;
   final String location;
   final String connectionMethod;
@@ -26,7 +26,7 @@ class SessionModel {
 
   factory SessionModel.fromJson(Map<String, dynamic> json) {
     return SessionModel(
-      id: json['id'] as String,
+      id: json['id'] as int,
       name: json['name'] as String,
       location: json['location'] as String,
       connectionMethod: json['connectionMethod'] as String,

@@ -1,4 +1,4 @@
-import 'package:mobile_app/features/session_mangement/domain/entities/attendency_record.dart';
+import 'package:mobile_app/features/session_mangement/data/models/attendency_record.dart';
 
 class AttendanceRecordModel {
   final String userId;
@@ -34,7 +34,6 @@ class AttendanceRecordModel {
       'location': location,
     };
   }
-
   AttendanceRecord toEntity() {
     return AttendanceRecord(
       userId: userId,

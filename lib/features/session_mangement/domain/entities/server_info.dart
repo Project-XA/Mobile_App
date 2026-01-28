@@ -1,7 +1,7 @@
 class ServerInfo {
   final String ipAddress;
   final int port;
-  final String sessionId;
+  final int sessionId;
 
   ServerInfo({
     required this.ipAddress,

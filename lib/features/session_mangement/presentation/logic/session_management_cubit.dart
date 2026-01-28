@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app/features/session_mangement/data/models/server_info.dart';
-import 'package:mobile_app/features/session_mangement/domain/entities/attendency_record.dart';
+import 'package:mobile_app/features/session_mangement/domain/entities/server_info.dart';
+import 'package:mobile_app/features/session_mangement/data/models/attendency_record.dart';
 import 'package:mobile_app/features/session_mangement/domain/entities/session.dart';
 import 'package:mobile_app/features/session_mangement/domain/use_cases/create_session_use_case.dart';
 import 'package:mobile_app/features/session_mangement/domain/use_cases/end_session_use_case.dart';
@@ -17,8 +17,8 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
   final ListenAttendanceUseCase listenAttendanceUseCase;
 
   StreamSubscription<AttendanceRecord>? _attendanceSubscription;
-  Timer? _sessionTimer; 
-  Timer? _warningTimer; 
+  Timer? _sessionTimer;
+  Timer? _warningTimer;
 
   SessionMangementCubit({
     required this.createSessionUseCase,
@@ -97,7 +97,7 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
     );
 
     final placeholderSession = Session(
-      id: '',
+      id: 0,
       name: name,
       location: location,
       connectionMethod: connectionMethod,
@@ -142,11 +142,7 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
 
     final serverInfo = await startSessionServerUseCase(currentState.session.id);
 
-    _listenToAttendance(
-      currentState.session,
-      serverInfo,
-      selectedTabIndex,
-    );
+    _listenToAttendance(currentState.session, serverInfo, selectedTabIndex);
 
     final activeSession = currentState.session.copyWith(
       status: SessionStatus.active,
@@ -213,7 +209,7 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
     if (currentState is! SessionState) return;
 
     debugPrint('🔴 Auto-ending session: ${currentState.session.name}');
-    
+
     try {
       await endSession();
     } catch (e) {
@@ -273,7 +269,7 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
       await _attendanceSubscription?.cancel();
       _attendanceSubscription = null;
 
-      await endSessionUseCase(currentState.session.id);
+      await endSessionUseCase(currentState.session.id, currentState.session);
 
       final endedSession = currentState.session.copyWith(
         status: SessionStatus.ended,
@@ -289,9 +285,7 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
       await Future.delayed(const Duration(seconds: 2));
 
       emit(
-        SessionManagementIdle(
-          selectedTabIndex: currentState.selectedTabIndex,
-        ),
+        SessionManagementIdle(selectedTabIndex: currentState.selectedTabIndex),
       );
     } catch (e) {
       _handleSessionError(
@@ -302,12 +296,7 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
   }
 
   void _handleSessionError(String message, int selectedTabIndex) {
-    emit(
-      SessionError(
-        message: message,
-        selectedTabIndex: selectedTabIndex,
-      ),
-    );
+    emit(SessionError(message: message, selectedTabIndex: selectedTabIndex));
 
     Future.delayed(const Duration(seconds: 3), () {
       if (state is SessionError) {
@@ -319,8 +308,8 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
   @override
   Future<void> close() {
     _attendanceSubscription?.cancel();
-    _sessionTimer?.cancel(); 
-    _warningTimer?.cancel(); 
+    _sessionTimer?.cancel();
+    _warningTimer?.cancel();
     return super.close();
   }
 }

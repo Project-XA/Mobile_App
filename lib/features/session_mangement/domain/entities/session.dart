@@ -1,7 +1,7 @@
-import 'package:mobile_app/features/session_mangement/domain/entities/attendency_record.dart';
+import 'package:mobile_app/features/session_mangement/data/models/attendency_record.dart';
 
 class Session {
-  final String id;
+  final int id;
   final String name;
   final String location;
   final String connectionMethod; 
@@ -24,7 +24,7 @@ class Session {
   });
 
   Session copyWith({
-    String? id,
+    int? id,
     String? name,
     String? location,
     String? connectionMethod,

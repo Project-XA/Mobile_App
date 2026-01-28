@@ -1,3 +1,5 @@
+import 'package:mobile_app/features/session_mangement/data/models/remote_models/save_attendance/save_attendance_request.dart';
+
 class AttendanceRecord {
   final String userId;
   final String userName;
@@ -15,7 +17,6 @@ class AttendanceRecord {
     this.signature,
   });
 
-  // Copy with method for updates
   AttendanceRecord copyWith({
     String? userId,
     String? userName,
@@ -46,6 +47,15 @@ class AttendanceRecord {
     };
   }
 
+  AttendanceLogItem toAttendanceLogItem() {
+    return AttendanceLogItem(
+      userId: userId,
+      timeStamp: checkInTime.toIso8601String(),
+      result: AttendanceResult.present, 
+      proofSignature: signature,
+      verificationId: null, 
+    );
+  }
   // Create from JSON
   factory AttendanceRecord.fromJson(Map<String, dynamic> json) {
     return AttendanceRecord(

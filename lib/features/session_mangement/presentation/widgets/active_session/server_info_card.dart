@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mobile_app/core/services/UI/spacing.dart';
 import 'package:mobile_app/core/themes/app_text_style.dart';
 import 'package:mobile_app/core/themes/font_weight_helper.dart';
-import 'package:mobile_app/features/session_mangement/data/models/server_info.dart';
+import 'package:mobile_app/features/session_mangement/domain/entities/server_info.dart';
 import 'package:mobile_app/features/session_mangement/presentation/widgets/active_session/copyable_info_row_widget.dart';
 import 'package:mobile_app/features/session_mangement/presentation/widgets/active_session/info_row_widget.dart';
 

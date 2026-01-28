@@ -1,12 +1,13 @@
 import 'package:mobile_app/core/curren_user/Data/local_data_soruce/user_local_data_source.dart';
 import 'package:mobile_app/core/curren_user/Data/remote_data_source/user_remote_data_source.dart';
-import 'package:mobile_app/features/session_mangement/data/models/remote_models/create_session_request_model.dart';
-import 'package:mobile_app/features/session_mangement/data/models/server_info.dart';
+import 'package:mobile_app/features/session_mangement/data/models/remote_models/create_session/create_session_request_model.dart';
+import 'package:mobile_app/features/session_mangement/data/models/remote_models/save_attendance/save_attendance_request.dart';
+import 'package:mobile_app/features/session_mangement/data/models/remote_models/save_attendance/save_attendance_response.dart';
+import 'package:mobile_app/features/session_mangement/domain/entities/server_info.dart';
 import 'package:mobile_app/features/session_mangement/data/service/http_server_service.dart';
-import 'package:mobile_app/features/session_mangement/domain/entities/attendency_record.dart';
+import 'package:mobile_app/features/session_mangement/data/models/attendency_record.dart';
 import 'package:mobile_app/features/session_mangement/domain/entities/session.dart';
 import 'package:mobile_app/features/session_mangement/domain/repos/session_repository.dart';
-import 'package:uuid/uuid.dart';
 
 class SessionRepositoryImpl implements SessionRepository {
   final HttpServerService _serverService;
@@ -17,6 +18,7 @@ class SessionRepositoryImpl implements SessionRepository {
   double? _sessionLatitude;
   double? _sessionLongitude;
   double? _allowedRadius;
+  int? sessionId;
 
   SessionRepositoryImpl({
     required HttpServerService serverService,
@@ -40,7 +42,6 @@ class SessionRepositoryImpl implements SessionRepository {
     required double longitude,
   }) async {
     try {
-      final sessionId = const Uuid().v4();
       final userData = await _localDataSource.getCurrentUser();
 
       final organizationId = userData.organizations!.isNotEmpty
@@ -67,14 +68,14 @@ class SessionRepositoryImpl implements SessionRepository {
         hallId: 1,
       );
 
-      await _remoteDataSource.createSession(requestModel);
+     sessionId= await _remoteDataSource.createSession(requestModel);
 
       _sessionLatitude = latitude;
       _sessionLongitude = longitude;
       _allowedRadius = allowedRadius;
 
       _currentSession = Session(
-        id: sessionId,
+        id: sessionId!,
         name: name,
         location: location,
         connectionMethod: connectionMethod,
@@ -92,8 +93,9 @@ class SessionRepositoryImpl implements SessionRepository {
   }
 
   @override
-  Future<ServerInfo> startSessionServer(String sessionId) async {
+  Future<ServerInfo> startSessionServer(int sessionId) async {
     try {
+      // ignore: unrelated_type_equality_checks
       if (_currentSession?.id != sessionId) {
         throw Exception('Session not found');
       }
@@ -115,7 +117,7 @@ class SessionRepositoryImpl implements SessionRepository {
   }
 
   @override
-  Future<void> endSession(String sessionId) async {
+  Future<void> endSession(int sessionId) async {
     try {
       if (_currentSession?.id != sessionId) {
         throw Exception('Session not found');
@@ -130,6 +132,16 @@ class SessionRepositoryImpl implements SessionRepository {
       _allowedRadius = null;
     } catch (e) {
       throw Exception('Failed to end session: $e');
+    }
+  }
+
+  @override
+  Future<SaveAttendanceResponse> saveAttendance(SaveAttendanceRequest request) async {
+    try {
+      final response = await _remoteDataSource.saveAttendance(request);
+      return response;
+    } catch (e) {
+      throw Exception('Failed to save attendance: $e');
     }
   }
 

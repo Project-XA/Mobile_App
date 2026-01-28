@@ -1,4 +1,4 @@
-import 'package:mobile_app/features/session_mangement/domain/entities/attendency_record.dart';
+import 'package:mobile_app/features/session_mangement/data/models/attendency_record.dart';
 import 'package:mobile_app/features/session_mangement/domain/repos/session_repository.dart';
 
 class ListenAttendanceUseCase {

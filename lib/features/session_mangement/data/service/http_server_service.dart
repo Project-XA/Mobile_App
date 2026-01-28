@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:mobile_app/features/session_mangement/data/models/attendence_request.dart';
-import 'package:mobile_app/features/session_mangement/data/models/server_info.dart';
+import 'package:mobile_app/features/session_mangement/domain/entities/server_info.dart';
 import 'package:mobile_app/features/session_mangement/domain/entities/session.dart';
 import 'package:nsd/nsd.dart';
 
@@ -16,7 +16,7 @@ class HttpServerService {
   Stream<AttendanceRequest> get attendanceStream =>
       _attendanceController.stream;
 
-  String? _currentSessionId;
+  int? _currentSessionId;
   Session? _currentSession;
   bool get isServerRunning => _server != null;
 
@@ -29,7 +29,7 @@ class HttpServerService {
   }
 
   Future<ServerInfo> startServer(
-    String sessionId,
+    int sessionId,
     Session session, {
     double? latitude,
     double? longitude,
