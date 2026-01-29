@@ -6,11 +6,11 @@ import 'package:mobile_app/core/themes/app_text_style.dart';
 import 'package:mobile_app/core/themes/font_weight_helper.dart';
 import 'package:mobile_app/core/widgets/app_text_form_field.dart';
 
-class SessionFormFields extends StatefulWidget { 
+class SessionFormFields extends StatefulWidget {
   final TextEditingController sessionNameController;
   final TextEditingController locationController;
   final TextEditingController durationController;
-  final TextEditingController allowedRadiusController; 
+  final TextEditingController allowedRadiusController;
   final TimeOfDay? initialTime;
   final String? initialWifiOption;
   final Function(TimeOfDay) onTimeSelected;
@@ -21,7 +21,7 @@ class SessionFormFields extends StatefulWidget {
     required this.sessionNameController,
     required this.locationController,
     required this.durationController,
-    required this.allowedRadiusController, 
+    required this.allowedRadiusController,
     this.initialTime,
     this.initialWifiOption,
     required this.onTimeSelected,
@@ -94,7 +94,7 @@ class _SessionFormFieldsState extends State<SessionFormFields> {
         _buildDurationField(),
         verticalSpace(15.h),
 
-        _buildAllowedRadiusField(), 
+        _buildAllowedRadiusField(),
       ],
     );
   }
@@ -238,7 +238,10 @@ class _SessionFormFieldsState extends State<SessionFormFields> {
         verticalSpace(8.h),
         AppTextFormField(
           borderRadius: 20.r,
-          contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 10.w,
+            vertical: 15.h,
+          ),
           focusedBorderColor: AppColors.mainTextColorBlack,
           enabledBorderColor: Colors.grey,
           controller: widget.durationController,
@@ -274,7 +277,10 @@ class _SessionFormFieldsState extends State<SessionFormFields> {
         verticalSpace(8.h),
         AppTextFormField(
           borderRadius: 20.r,
-          contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 10.w,
+            vertical: 15.h,
+          ),
           focusedBorderColor: AppColors.mainTextColorBlack,
           enabledBorderColor: Colors.grey,
           controller: widget.allowedRadiusController,

@@ -21,6 +21,7 @@ final class SessionManagementError extends SessionManagementState {
 
 sealed class SessionManagementStateWithTab extends SessionManagementState {
   final int selectedTabIndex;
+
   const SessionManagementStateWithTab({
     this.selectedTabIndex = 0,
   });
@@ -64,14 +65,16 @@ final class SessionState extends SessionManagementStateWithTab {
   final SessionOperation operation;
   final ServerInfo? serverInfo;
   final AttendanceRecord? latestRecord;
-  final bool showWarning; 
+  final bool showWarning;
+  final bool showNetworkError; // ⬅️ إضافة هنا
 
   const SessionState({
     required this.session,
     required this.operation,
     this.serverInfo,
     this.latestRecord,
-    this.showWarning = false, 
+    this.showWarning = false,
+    this.showNetworkError = false, // ⬅️ إضافة هنا
     super.selectedTabIndex,
   });
 
@@ -89,7 +92,8 @@ final class SessionState extends SessionManagementStateWithTab {
     AttendanceRecord? latestRecord,
     int? selectedTabIndex,
     bool clearLatestRecord = false,
-    bool? showWarning, 
+    bool? showWarning,
+    bool? showNetworkError, // ⬅️ إضافة هنا
   }) {
     return SessionState(
       session: session ?? this.session,
@@ -97,7 +101,8 @@ final class SessionState extends SessionManagementStateWithTab {
       serverInfo: serverInfo ?? this.serverInfo,
       latestRecord: clearLatestRecord ? null : (latestRecord ?? this.latestRecord),
       selectedTabIndex: selectedTabIndex ?? this.selectedTabIndex,
-      showWarning: showWarning ?? this.showWarning, 
+      showWarning: showWarning ?? this.showWarning,
+      showNetworkError: showNetworkError ?? this.showNetworkError, // ⬅️ إضافة هنا
     );
   }
 }
@@ -105,10 +110,12 @@ final class SessionState extends SessionManagementStateWithTab {
 final class SessionError extends SessionManagementStateWithTab {
   final String message;
   final Session? session;
+  final bool isNetworkError; // ⬅️ إضافة للتمييز بين أنواع الأخطاء
 
   const SessionError({
     required this.message,
     this.session,
+    this.isNetworkError = false, 
     super.selectedTabIndex,
   });
 }

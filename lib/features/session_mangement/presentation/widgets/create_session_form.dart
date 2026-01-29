@@ -137,12 +137,59 @@ class _CreateSessionFormState extends State<CreateSessionForm> {
     );
   }
 
+  Widget _buildNetworkErrorBanner() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 16.h),
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: Colors.red.shade50,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: Colors.red.shade300, width: 2),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.wifi_off_rounded,
+            color: Colors.red,
+            size: 28.sp,
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'No Internet Connection',
+                  style: AppTextStyle.font14MediamGrey.copyWith(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeightHelper.bold,
+                    color: Colors.red.shade900,
+                  ),
+                ),
+                verticalSpace(4.h),
+                Text(
+                  'Please check your internet connection and try again.',
+                  style: AppTextStyle.font14MediamGrey.copyWith(
+                    fontSize: 13.sp,
+                    color: Colors.red.shade700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SessionMangementCubit, SessionManagementState>(
       listener: (context, state) {
         if (state is SessionError) {
-          showToast(message: state.message, type: ToastType.error);
+          if (!state.isNetworkError) {
+            showToast(message: state.message, type: ToastType.error);
+          }
         }
       },
       builder: (context, state) {
@@ -151,6 +198,7 @@ class _CreateSessionFormState extends State<CreateSessionForm> {
         }
 
         final isLoading = state is SessionState && state.isLoading;
+        final showNetworkError = state is SessionError && state.isNetworkError; 
 
         return Form(
           key: _formKey,
@@ -160,6 +208,8 @@ class _CreateSessionFormState extends State<CreateSessionForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 verticalSpace(20.h),
+
+                if (showNetworkError) _buildNetworkErrorBanner(),
 
                 SessionFormFields(
                   sessionNameController: _sessionNameController,

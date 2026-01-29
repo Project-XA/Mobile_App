@@ -6,10 +6,7 @@ class CreateSessionUseCase {
   final SessionRepository _repository;
   final NetworkInfoService _networkInfoService;
 
-  CreateSessionUseCase(
-    this._repository,
-    this._networkInfoService,
-  );
+  CreateSessionUseCase(this._repository, this._networkInfoService);
 
   Future<Session> call({
     required String name,
@@ -19,8 +16,7 @@ class CreateSessionUseCase {
     required int durationMinutes,
     required double allowedRadius,
   }) async {
-    final networkInfo =
-        await _networkInfoService.getNetworkAndLocationInfo();
+    final networkInfo = await _networkInfoService.getNetworkAndLocationInfo();
 
     final startAt = startTime.toUtc();
     final endAt = startAt.add(Duration(minutes: durationMinutes));

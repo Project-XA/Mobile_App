@@ -1,4 +1,5 @@
 import 'package:mobile_app/core/networking/api_const.dart';
+import 'package:mobile_app/core/networking/api_error_handler.dart';
 import 'package:mobile_app/core/networking/network_service.dart';
 import 'package:mobile_app/features/attendance/data/models/get-user-statistics/get_user_statisticts_response_model.dart';
 import 'package:mobile_app/features/auth/data/models/register_request_body.dart';
@@ -12,7 +13,7 @@ abstract class UserRemoteDataSource {
 
   Future<int> createSession(CreateSessionRequestModel createSessionRequest);
   Future<GetUserStatistictsResponseModel> getUserStatistics();
-  Future<SaveAttendanceResponse>saveAttendance(SaveAttendanceRequest request);
+  Future<SaveAttendanceResponse> saveAttendance(SaveAttendanceRequest request);
 }
 
 class UserRemoteDataSourceImp implements UserRemoteDataSource {
@@ -28,22 +29,10 @@ class UserRemoteDataSourceImp implements UserRemoteDataSource {
         request.toJson(),
       );
 
-      if (response.statusCode == 200) {
-        final data = response.data['data'] as Map<String, dynamic>;
-
-        final apiResponse = RegisterResponseBody.fromJson(data);
-
-        return apiResponse;
-      } else if (response.statusCode == 400) {
-        final message = response.data['message'] ?? 'Invalid credentials';
-        throw Exception(message);
-      } else if (response.statusCode == 404) {
-        throw Exception('Organization not found');
-      } else {
-        throw Exception('Registration failed: ${response.statusCode}');
-      }
+      final data = response.data['data'] as Map<String, dynamic>;
+      return RegisterResponseBody.fromJson(data);
     } catch (e) {
-      rethrow;
+      throw ApiErrorHandler.handle(e);
     }
   }
 
@@ -51,46 +40,48 @@ class UserRemoteDataSourceImp implements UserRemoteDataSource {
   Future<int> createSession(
     CreateSessionRequestModel createSessionRequest,
   ) async {
-    final response = await networkService.post(
-      ApiConst.createSession,
-      createSessionRequest.toJson(),
-    );
+    try {
+      final response = await networkService.post(
+        ApiConst.createSession,
+        createSessionRequest.toJson(),
+      );
 
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception('Failed to create session: ${response.statusCode}');
+      final sessionId = response.data['data']['sessionId'] as int;
+      return sessionId;
+    } catch (e) {
+      final error = ApiErrorHandler.handle(e);
+      throw error;
     }
-    final sessionId = response.data['data']['sessionId'] as int;
-    return sessionId;
   }
 
   @override
   Future<SaveAttendanceResponse> saveAttendance(
-      SaveAttendanceRequest request) async {
-    final response = await networkService.post(
-      ApiConst.saveAttendance,
-      request.toJson(),
-    );
+    SaveAttendanceRequest request,
+  ) async {
+    try {
+      final response = await networkService.post(
+        ApiConst.saveAttendance,
+        request.toJson(),
+      );
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
       final data = response.data as Map<String, dynamic>;
       return SaveAttendanceResponse.fromJson(data);
-    } else {
-      throw Exception(
-        'Failed to save attendance: ${response.statusCode}',
-      );
+    } catch (e) {
+      final error = ApiErrorHandler.handle(e);
+      throw error;
     }
   }
 
   @override
   Future<GetUserStatistictsResponseModel> getUserStatistics() async {
-    final response = await networkService.get(ApiConst.userStatistics);
-    if (response.statusCode == 200) {
+    try {
+      final response = await networkService.get(ApiConst.userStatistics);
+
       final data = response.data['data'] as Map<String, dynamic>;
       return GetUserStatistictsResponseModel.fromJson(data);
-    } else {
-      throw Exception(
-        'Failed to fetch user statistics: ${response.statusCode}',
-      );
+    } catch (e) {
+      final error = ApiErrorHandler.handle(e);
+      throw error;
     }
   }
 }

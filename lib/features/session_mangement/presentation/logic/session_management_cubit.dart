@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app/core/networking/api_error_model.dart'; // ⬅️ استورد ده
 import 'package:mobile_app/features/session_mangement/domain/entities/server_info.dart';
 import 'package:mobile_app/features/session_mangement/data/models/attendency_record.dart';
 import 'package:mobile_app/features/session_mangement/domain/entities/session.dart';
@@ -70,13 +71,28 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
       );
 
       await _startServer(currentState.selectedTabIndex);
+    } on ApiErrorModel catch (error) {
+      _handleSessionError(
+        error.message,
+        currentState.selectedTabIndex,
+        isNetworkError: _isNetworkError(error.type),
+      );
     } catch (e) {
       _handleSessionError(
-        'Failed to start session: $e',
+       'unexpected error occur ${e.toString()}',
         currentState.selectedTabIndex,
       );
     }
   }
+
+  bool _isNetworkError(ApiErrorType type) {
+    return type == ApiErrorType.connectionError ||
+        type == ApiErrorType.connectionTimeout ||
+        type == ApiErrorType.sendTimeout ||
+        type == ApiErrorType.receiveTimeout;
+  }
+
+
 
   Future<void> _createSession({
     required String name,
@@ -287,16 +303,32 @@ class SessionMangementCubit extends Cubit<SessionManagementState> {
       emit(
         SessionManagementIdle(selectedTabIndex: currentState.selectedTabIndex),
       );
+    } on ApiErrorModel catch (error) {
+      _handleSessionError(
+        error.message,
+        currentState.selectedTabIndex,
+        isNetworkError: _isNetworkError(error.type),
+      );
     } catch (e) {
       _handleSessionError(
-        'Failed to end session: $e',
+        'error occur in end session ${e.toString()}',
         currentState.selectedTabIndex,
       );
     }
   }
 
-  void _handleSessionError(String message, int selectedTabIndex) {
-    emit(SessionError(message: message, selectedTabIndex: selectedTabIndex));
+  void _handleSessionError(
+    String message,
+    int selectedTabIndex, {
+    bool isNetworkError = false,
+  }) {
+    emit(
+      SessionError(
+        message: message,
+        selectedTabIndex: selectedTabIndex,
+        isNetworkError: isNetworkError,
+      ),
+    );
 
     Future.delayed(const Duration(seconds: 3), () {
       if (state is SessionError) {
