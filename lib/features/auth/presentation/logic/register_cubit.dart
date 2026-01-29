@@ -16,8 +16,6 @@ class RegisterCubit extends Cubit<RegisterState> {
   }) async {
     emit(RegisterLoadingState());
 
-   
-
     final result = await registerUseCase(
       orgId: orgId,
       email: email,
@@ -30,7 +28,7 @@ class RegisterCubit extends Cubit<RegisterState> {
         emit(RegisterLoadedState(user: user));
       },
       onError: (error) {
-        emit(RegisterFailureState(message: error.toString()));
+        emit(RegisterFailureState(error: error));
       },
     );
   }

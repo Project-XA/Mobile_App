@@ -1,3 +1,4 @@
+import 'package:mobile_app/core/networking/api_error_model.dart';
 import 'package:mobile_app/features/session_mangement/domain/entities/server_info.dart';
 import 'package:mobile_app/features/session_mangement/data/models/attendency_record.dart';
 import 'package:mobile_app/features/session_mangement/domain/entities/session.dart';
@@ -66,7 +67,7 @@ final class SessionState extends SessionManagementStateWithTab {
   final ServerInfo? serverInfo;
   final AttendanceRecord? latestRecord;
   final bool showWarning;
-  final bool showNetworkError; // ⬅️ إضافة هنا
+  final bool showNetworkError; 
 
   const SessionState({
     required this.session,
@@ -74,7 +75,7 @@ final class SessionState extends SessionManagementStateWithTab {
     this.serverInfo,
     this.latestRecord,
     this.showWarning = false,
-    this.showNetworkError = false, // ⬅️ إضافة هنا
+    this.showNetworkError = false, 
     super.selectedTabIndex,
   });
 
@@ -93,7 +94,7 @@ final class SessionState extends SessionManagementStateWithTab {
     int? selectedTabIndex,
     bool clearLatestRecord = false,
     bool? showWarning,
-    bool? showNetworkError, // ⬅️ إضافة هنا
+    bool? showNetworkError, 
   }) {
     return SessionState(
       session: session ?? this.session,
@@ -108,14 +109,28 @@ final class SessionState extends SessionManagementStateWithTab {
 }
 
 final class SessionError extends SessionManagementStateWithTab {
-  final String message;
+  final ApiErrorModel error; // ✅ error كامل
   final Session? session;
-  final bool isNetworkError; // ⬅️ إضافة للتمييز بين أنواع الأخطاء
-
+  
   const SessionError({
-    required this.message,
+    required this.error,
     this.session,
-    this.isNetworkError = false, 
     super.selectedTabIndex,
   });
+  
+  // Convenience getters
+  String get message => error.message;
+  bool get isNetworkError => error.isNetworkError;
+  
+  SessionError copyWith({
+    ApiErrorModel? error,
+    Session? session,
+    int? selectedTabIndex,
+  }) {
+    return SessionError(
+      error: error ?? this.error,
+      session: session ?? this.session,
+      selectedTabIndex: selectedTabIndex ?? this.selectedTabIndex,
+    );
+  }
 }

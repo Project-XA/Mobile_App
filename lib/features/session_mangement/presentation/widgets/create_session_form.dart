@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mobile_app/core/networking/api_error_model.dart';
 import 'package:mobile_app/core/services/UI/spacing.dart';
 import 'package:mobile_app/core/services/UI/toast_service.dart';
 import 'package:mobile_app/core/services/location/location_helper.dart';
@@ -148,11 +149,7 @@ class _CreateSessionFormState extends State<CreateSessionForm> {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.wifi_off_rounded,
-            color: Colors.red,
-            size: 28.sp,
-          ),
+          Icon(Icons.wifi_off_rounded, color: Colors.red, size: 28.sp),
           SizedBox(width: 12.w),
           Expanded(
             child: Column(
@@ -187,8 +184,8 @@ class _CreateSessionFormState extends State<CreateSessionForm> {
     return BlocConsumer<SessionMangementCubit, SessionManagementState>(
       listener: (context, state) {
         if (state is SessionError) {
-          if (!state.isNetworkError) {
-            showToast(message: state.message, type: ToastType.error);
+          if (!state.error.isNetworkError) {
+            showToast(message: state.error.message, type: ToastType.error);
           }
         }
       },
@@ -198,7 +195,7 @@ class _CreateSessionFormState extends State<CreateSessionForm> {
         }
 
         final isLoading = state is SessionState && state.isLoading;
-        final showNetworkError = state is SessionError && state.isNetworkError; 
+        final showNetworkError = state is SessionError && state.isNetworkError;
 
         return Form(
           key: _formKey,

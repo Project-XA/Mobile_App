@@ -114,7 +114,7 @@ class _RegisterFormState extends State<RegisterForm> {
         if (state is RegisterLoadedState) {
           _handleSuccess(state);
         } else if (state is RegisterFailureState) {
-          _handleError(state.message);
+          _handleError(state.error.message);
         }
       },
       builder: (context, state) {

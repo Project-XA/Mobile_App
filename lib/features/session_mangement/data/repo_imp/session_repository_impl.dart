@@ -1,6 +1,5 @@
 import 'package:mobile_app/core/curren_user/Data/local_data_soruce/user_local_data_source.dart';
 import 'package:mobile_app/core/curren_user/Data/remote_data_source/user_remote_data_source.dart';
-import 'package:mobile_app/core/networking/api_error_handler.dart';
 import 'package:mobile_app/core/networking/api_error_model.dart';
 import 'package:mobile_app/features/session_mangement/data/models/remote_models/create_session/create_session_request_model.dart';
 import 'package:mobile_app/features/session_mangement/data/models/remote_models/save_attendance/save_attendance_request.dart';

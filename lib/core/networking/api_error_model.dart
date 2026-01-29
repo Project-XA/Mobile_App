@@ -24,7 +24,6 @@ enum ApiErrorType {
   defaultError,
 }
 
-// Extension لتحويل Enum لـ Icon في الـ UI
 extension ApiErrorTypeExtension on ApiErrorType {
   String get iconName {
     switch (this) {
@@ -48,4 +47,15 @@ extension ApiErrorTypeExtension on ApiErrorType {
         return 'error';
     }
   }
+
+  bool get isNetworkError {
+    return this == ApiErrorType.connectionError ||
+        this == ApiErrorType.connectionTimeout ||
+        this == ApiErrorType.sendTimeout ||
+        this == ApiErrorType.receiveTimeout;
+  }
+}
+
+extension ApiErrorModelX on ApiErrorModel {
+  bool get isNetworkError => type.isNetworkError;
 }

@@ -21,7 +21,6 @@ class CameraRepImp implements CameraRepository {
   late final FieldServiceModel _fieldModel;
   late final IdServiceModel _idModel;
 
-  // Helper service for field processing
   late final FieldProcessingService _fieldProcessingService;
 
   final CameraPermissionService _permissionService;
@@ -41,7 +40,6 @@ class CameraRepImp implements CameraRepository {
     final hasPermission = await _permissionService.isCameraPermissionGranted();
 
     if (!hasPermission) {
-      // Request permission
       final granted = await _permissionService.requestCameraPermission();
       if (!granted) {
         throw CameraPermissionException(
@@ -79,7 +77,6 @@ class CameraRepImp implements CameraRepository {
   @override
   Future<CapturedPhoto> capturePhoto() async {
     _ensureCameraInitialized();
-    //  await _stopCameraStream();
     final file = await _controller!.takePicture();
     return CapturedPhoto(path: file.path);
   }
@@ -134,19 +131,11 @@ class CameraRepImp implements CameraRepository {
     return await _fieldProcessingService.extractFinalData(croppedFields);
   }
 
-  // ========== Private Helpers ==========
   void _ensureCameraInitialized() {
     if (_controller == null || !_isCameraInitialized) {
       throw Exception("Camera not initialized");
     }
   }
-
-  // Future<void> _stopCameraStream() async {
-  //   try {
-  //     await _controller?.stopImageStream();
-  //     await _controller?.pausePreview();
-  //   } catch (_) {}
-  // }
 
   Future<void> _ensureModelLoaded(dynamic model) async {
     if (!model.isLoaded) {

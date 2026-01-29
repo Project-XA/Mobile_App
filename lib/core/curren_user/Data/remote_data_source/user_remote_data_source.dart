@@ -49,8 +49,7 @@ class UserRemoteDataSourceImp implements UserRemoteDataSource {
       final sessionId = response.data['data']['sessionId'] as int;
       return sessionId;
     } catch (e) {
-      final error = ApiErrorHandler.handle(e);
-      throw error;
+      throw ApiErrorHandler.handle(e);
     }
   }
 
@@ -67,8 +66,7 @@ class UserRemoteDataSourceImp implements UserRemoteDataSource {
       final data = response.data as Map<String, dynamic>;
       return SaveAttendanceResponse.fromJson(data);
     } catch (e) {
-      final error = ApiErrorHandler.handle(e);
-      throw error;
+      throw ApiErrorHandler.handle(e);
     }
   }
 
@@ -80,8 +78,7 @@ class UserRemoteDataSourceImp implements UserRemoteDataSource {
       final data = response.data['data'] as Map<String, dynamic>;
       return GetUserStatistictsResponseModel.fromJson(data);
     } catch (e) {
-      final error = ApiErrorHandler.handle(e);
-      throw error;
+      throw ApiErrorHandler.handle(e);
     }
   }
 }

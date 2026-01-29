@@ -1,6 +1,8 @@
 import 'package:mobile_app/core/curren_user/Data/local_data_soruce/user_local_data_source.dart';
 import 'package:mobile_app/core/curren_user/Data/models/user_org_model.dart';
 import 'package:mobile_app/core/curren_user/Data/remote_data_source/user_remote_data_source.dart';
+import 'package:mobile_app/core/networking/api_error_handler.dart';
+import 'package:mobile_app/core/networking/api_error_model.dart';
 import 'package:mobile_app/core/networking/api_result.dart';
 import 'package:mobile_app/core/networking/dio_factory.dart';
 import 'package:mobile_app/core/services/auth/onboarding_service.dart';
@@ -29,9 +31,12 @@ class RegisterRepoImp implements RegisterRepo {
     try {
       final orgIdInt = int.tryParse(orgId);
       if (orgIdInt == null) {
-        throw Exception('Invalid organization ID: $orgId');
+        throw const ApiErrorModel(
+          message: 'Invalid organization ID',
+          type: ApiErrorType.defaultError,
+          statusCode: 400,
+        );
       }
-
       final request = RegisterRequestBody(
         organizationCode: orgIdInt,
         email: email,
@@ -78,10 +83,12 @@ class RegisterRepoImp implements RegisterRepo {
       );
 
       await onboardingService.markLoggedIn(apiResponse.userResponse.role);
-
       return ApiResult.success(completeUserData);
+    } on ApiErrorModel catch (error) {
+      return ApiResult.error(error);
     } catch (e) {
-      return ApiResult.error(e);
+      final apiError = ApiErrorHandler.handle(e);
+      return ApiResult.error(apiError);
     }
   }
 }
