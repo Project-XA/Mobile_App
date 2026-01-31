@@ -12,6 +12,16 @@ class FieldTypeHelper {
     'invalid_',
   ];
 
+static bool isPhotoField(String fieldName) {
+    final lowerName = fieldName.toLowerCase();
+    return lowerName.contains('photo') ||
+           lowerName.contains('image') ||
+           lowerName.contains('picture') ||
+           lowerName.contains('face') ||
+           lowerName.contains('portrait') ||
+           lowerName == 'صورة' ||
+           lowerName == 'صوره';
+  }
   // ========== Validation Methods ==========
 
   static bool isInvalidField(String fieldName) {

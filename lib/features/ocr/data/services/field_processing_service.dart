@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:mobile_app/features/ocr/data/helpers/field_type_helpers.dart';
 import 'package:mobile_app/features/ocr/data/model/cropped_field.dart';
 import 'package:mobile_app/features/ocr/data/model/ml_models/id_service_model.dart';
@@ -37,6 +36,11 @@ class FieldProcessingService {
     final results = <String, String>{};
 
     for (final field in croppedFields) {
+      if (FieldTypeHelper.isPhotoField(field.fieldName)) {
+        results['photo'] = field.imagePath; 
+        continue;
+      }
+
       if (FieldTypeHelper.isInvalidField(field.fieldName)) continue;
 
       try {

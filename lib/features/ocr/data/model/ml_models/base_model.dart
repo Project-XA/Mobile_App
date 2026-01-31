@@ -22,6 +22,7 @@ abstract class BaseModel {
       throw ModelLoadException(modelPath, e);
     }
   }
+    Interpreter? get interpreter => _interpreter;
 
   /// Get input tensor shape
   List<int> getInputShape() {

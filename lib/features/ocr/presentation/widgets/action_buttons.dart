@@ -85,7 +85,7 @@ class ActionButtons extends StatelessWidget {
                   await authStateService.markOCRComplete();
 
                   // ignore: use_build_context_synchronously
-                  context.pushNamed(Routes.registerScreen);
+                  context.pushNamed(Routes.verficationScreen);
                 }
               } catch (e) {
                 if (context.mounted) {

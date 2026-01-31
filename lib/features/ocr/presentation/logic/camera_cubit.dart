@@ -33,19 +33,21 @@ class CameraCubit extends Cubit<CameraState> {
   Future<void> openCamera() async {
     if (state.isOpened) return;
 
-    emit(state.copyWith(
-      isInitializing: true, 
-      hasError: false, 
-      hasPermissionDenied: false,
-      showInvalidCardMessage: false,
-    ));
+    emit(
+      state.copyWith(
+        isInitializing: true,
+        hasError: false,
+        hasPermissionDenied: false,
+        showInvalidCardMessage: false,
+      ),
+    );
 
     try {
       final status = await Permission.camera.status;
-      
+
       if (status.isDenied || status.isPermanentlyDenied) {
         final result = await Permission.camera.request();
-        
+
         if (result.isDenied || result.isPermanentlyDenied) {
           emit(
             state.copyWith(
@@ -92,11 +94,13 @@ class CameraCubit extends Cubit<CameraState> {
   Future<void> capturePhoto() async {
     if (!state.canCapture) return;
 
-    emit(state.copyWith(
-      isProcessing: true, 
-      hasError: false,
-      showInvalidCardMessage: false,
-    ));
+    emit(
+      state.copyWith(
+        isProcessing: true,
+        hasError: false,
+        showInvalidCardMessage: false,
+      ),
+    );
 
     try {
       final photo = await _captureUseCase.execute();
@@ -115,7 +119,6 @@ class CameraCubit extends Cubit<CameraState> {
       final isCard = await _validateUseCase.execute(photo);
 
       if (!isCard) {
-        
         emit(
           state.copyWith(
             isProcessing: false,
@@ -128,26 +131,18 @@ class CameraCubit extends Cubit<CameraState> {
         );
 
         await Future.delayed(const Duration(seconds: 2));
-        
-        emit(
-          state.copyWith(
-            showInvalidCardMessage: false,
-            errorMessage: null,
-          ),
-        );
-        
+
+        emit(state.copyWith(showInvalidCardMessage: false, errorMessage: null));
+
         await openCamera();
         return;
       }
 
-
       final detections = await _repository.detectFields(photo);
-      
 
       final validationResult = await _validateFieldsUseCase.execute(detections);
 
       if (!validationResult.isValid) {
-        
         emit(
           state.copyWith(
             isProcessing: false,
@@ -160,28 +155,23 @@ class CameraCubit extends Cubit<CameraState> {
         );
 
         await Future.delayed(const Duration(seconds: 2));
-        
-        emit(
-          state.copyWith(
-            showInvalidCardMessage: false,
-            errorMessage: null,
-          ),
-        );
-        
+
+        emit(state.copyWith(showInvalidCardMessage: false, errorMessage: null));
+
         await openCamera();
         return;
       }
 
-
       final result = await _processUseCase.execute(photo);
 
-      final hasFirstName = result.finalData['firstName'] != null && 
-                           result.finalData['firstName']!.isNotEmpty;
-      final hasLastName = result.finalData['lastName'] != null && 
-                          result.finalData['lastName']!.isNotEmpty;
+      final hasFirstName =
+          result.finalData['firstName'] != null &&
+          result.finalData['firstName']!.isNotEmpty;
+      final hasLastName =
+          result.finalData['lastName'] != null &&
+          result.finalData['lastName']!.isNotEmpty;
 
       if (!hasFirstName || !hasLastName) {
-    
         emit(
           state.copyWith(
             isProcessing: false,
@@ -194,18 +184,12 @@ class CameraCubit extends Cubit<CameraState> {
         );
 
         await Future.delayed(const Duration(seconds: 2));
-        
-        emit(
-          state.copyWith(
-            showInvalidCardMessage: false,
-            errorMessage: null,
-          ),
-        );
-        
+
+        emit(state.copyWith(showInvalidCardMessage: false, errorMessage: null));
+
         await openCamera();
         return;
       }
-
 
       emit(
         state.copyWith(
@@ -229,7 +213,7 @@ class CameraCubit extends Cubit<CameraState> {
       );
 
       await Future.delayed(const Duration(seconds: 2));
-      
+
       emit(
         state.copyWith(
           showInvalidCardMessage: false,
@@ -237,7 +221,7 @@ class CameraCubit extends Cubit<CameraState> {
           hasError: false,
         ),
       );
-      
+
       await openCamera();
     }
   }

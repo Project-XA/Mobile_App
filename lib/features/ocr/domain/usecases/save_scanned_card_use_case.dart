@@ -9,9 +9,10 @@ class SaveScannedCardUseCase {
   SaveScannedCardUseCase(this._dataSource);
 
   Future<void> execute(Map<String, String> ocrData) async {
-    
-
-    String getOcrValue(List<String> possibleKeys, {String defaultValue = 'N/A'}) {
+    String getOcrValue(
+      List<String> possibleKeys, {
+      String defaultValue = 'N/A',
+    }) {
       for (final key in possibleKeys) {
         final value = ocrData[key];
         if (value != null && value.isNotEmpty) {
@@ -22,27 +23,40 @@ class SaveScannedCardUseCase {
     }
 
     final userModel = UserModel(
-      nationalId: getOcrValue(
-        ['national_id', 'nid', 'id', 'nationalId', 'idNumber'],
-        defaultValue: 'UNKNOWN_${DateTime.now().millisecondsSinceEpoch}',
-      ),
-      
-      firstNameAr: getOcrValue(
-        ['first_name_ar', 'first_name', 'firstName', 'name_ar'],
-        defaultValue: ocrData['name']?.split(' ').firstOrNull ?? 'N/A',
-      ),
-      
-      lastNameAr: getOcrValue(
-        ['last_name_ar', 'last_name', 'lastName'],
-        defaultValue: ocrData['name']?.split(' ').lastOrNull ?? 'N/A',
-      ),
-      
-      address: getOcrValue(['address', 'addr', 'location'], defaultValue: 'Helwan'),
-      
-      birthDate: getOcrValue(
-        ['birth_date', 'dob', 'birthDate', 'date_of_birth', 'dateOfBirth'],
-        defaultValue: '0102/21',
-      ),
+      nationalId: getOcrValue([
+        'national_id',
+        'nid',
+        'id',
+        'nationalId',
+        'idNumber',
+      ], defaultValue: 'UNKNOWN_${DateTime.now().millisecondsSinceEpoch}'),
+
+      firstNameAr: getOcrValue([
+        'first_name_ar',
+        'first_name',
+        'firstName',
+        'name_ar',
+      ], defaultValue: ocrData['name']?.split(' ').firstOrNull ?? 'N/A'),
+
+      lastNameAr: getOcrValue([
+        'last_name_ar',
+        'last_name',
+        'lastName',
+      ], defaultValue: ocrData['name']?.split(' ').lastOrNull ?? 'N/A'),
+
+      address: getOcrValue([
+        'address',
+        'addr',
+        'location',
+      ], defaultValue: 'Helwan'),
+
+      birthDate: getOcrValue([
+        'birth_date',
+        'dob',
+        'birthDate',
+        'date_of_birth',
+        'dateOfBirth',
+      ], defaultValue: '0102/21'),
       idCardImage: ocrData['photo'],
       email: null,
       firstNameEn: null,
@@ -50,6 +64,8 @@ class SaveScannedCardUseCase {
       organizations: null,
       profileImage: null,
     );
+
+    print("+++++++++++++++++++++++++++++++++++++++++++++++++++${userModel.idCardImage}");
 
     await _dataSource.saveLocalUserData(userModel);
   }
